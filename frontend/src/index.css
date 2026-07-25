@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #131318;
+    color: #e4e1e9;
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-card {
+  background: rgba(31, 31, 37, 0.6);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card-hoverable:hover {
+  border-color: rgba(210, 187, 255, 0.3);
+  background: rgba(31, 31, 37, 0.8);
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+.bloom-purple {
+  box-shadow: 0 0 40px 0 rgba(124, 58, 237, 0.15);
+}
+
+.primary-glow:hover {
+  box-shadow: 0 0 25px 0 rgba(124, 58, 237, 0.5);
+}
+
+.marching-ants {
+  background-image: linear-gradient(90deg, #03b5d3 50%, transparent 50%);
+  background-size: 10px 1px;
+  background-repeat: repeat-x;
+  animation: move-ants 0.5s linear infinite;
+}
+
+@keyframes move-ants {
+  from { background-position: 0 0; }
+  to { background-position: 10px 0; }
+}
+
+.active-ring {
+  box-shadow: 0 0 0 2px #131318, 0 0 0 4px #7c3aed;
+}
+
+.active-glow {
+  animation: pulse-glow 2s infinite ease-in-out;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { 
+    box-shadow: 0 0 15px -2px rgba(124, 58, 237, 0.3), inset 0 0 10px rgba(124, 58, 237, 0.1); 
+    border-color: rgba(124, 58, 237, 0.4);
+  }
+  50% { 
+    box-shadow: 0 0 30px 2px rgba(124, 58, 237, 0.5), inset 0 0 15px rgba(124, 58, 237, 0.2); 
+    border-color: rgba(124, 58, 237, 0.7);
+  }
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #35343a;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #4a4455;
+}
+
+/* Custom CSS animations for pipeline and nodes */
+@keyframes dash {
+  to {
+    stroke-dashoffset: -40;
+  }
+}
+
+.animate-dash {
+  stroke-dasharray: 5, 5;
+  animation: dash 2s linear infinite;
+}
