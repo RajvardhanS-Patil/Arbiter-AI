@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Gavel, Eye, FileText, History, Zap, Settings, RefreshCw, X, Shield, Menu, Sun, Moon } from 'lucide-react';
 import { api } from '../../services/api';
@@ -10,8 +10,24 @@ export const Layout = ({ children }) => {
   const [totalSessions, setTotalSessions] = useState(0);
   const [sidebarVisible, setSidebarVisible] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(true); // Default to dark mode
+  const glowRef = useRef(null);
 
   const [activeSession, setActiveSession] = useState(null);
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (glowRef.current) {
+        // Use requestAnimationFrame for smoother performance or direct style updates
+        glowRef.current.style.left = `${e.clientX}px`;
+        glowRef.current.style.top = `${e.clientY}px`;
+      }
+    };
+    
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
 
   useEffect(() => {
     // Fetch stats
@@ -44,7 +60,14 @@ export const Layout = ({ children }) => {
   };
 
   return (
-    <div className="bg-surface text-on-surface min-h-screen font-body-md relative select-none">
+    <div className="bg-surface text-on-surface min-h-screen font-body-md relative select-none overflow-hidden">
+      {/* Cursor Glow Effect */}
+      <div 
+        ref={glowRef}
+        className="pointer-events-none fixed w-[500px] h-[500px] rounded-full -translate-x-1/2 -translate-y-1/2 z-0 mix-blend-screen opacity-40 blur-[120px] bg-primary/40 transition-opacity duration-300"
+        style={{ left: '-1000px', top: '-1000px' }}
+      />
+      
       {/* Top Navbar */}
       <nav className="fixed top-0 w-full h-16 z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop py-4 bg-surface/80 backdrop-blur-xl border-b border-white/10 shadow-sm transition-all duration-300">
         <div className="flex items-center gap-4 md:gap-8">
