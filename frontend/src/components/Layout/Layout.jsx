@@ -64,7 +64,7 @@ export const Layout = ({ children }) => {
       {/* Cursor Glow Effect */}
       <div 
         ref={glowRef}
-        className="pointer-events-none fixed w-[250px] h-[250px] rounded-full -translate-x-1/2 -translate-y-1/2 z-0 mix-blend-screen opacity-20 blur-[80px] bg-primary/30 transition-opacity duration-300"
+        className="pointer-events-none fixed w-[120px] h-[120px] rounded-full -translate-x-1/2 -translate-y-1/2 z-0 mix-blend-screen opacity-80 blur-[30px] bg-secondary/80 transition-opacity duration-75"
         style={{ left: '-1000px', top: '-1000px' }}
       />
       
