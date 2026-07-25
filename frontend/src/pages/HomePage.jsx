@@ -21,6 +21,7 @@ export const HomePage = () => {
   });
   const [activeSessionId, setActiveSessionId] = useState(null);
   const [showProgress, setShowProgress] = useState(false);
+  const [demoTarget, setDemoTarget] = useState('/report/demo');
 
   useEffect(() => {
     // Fetch recent sessions
@@ -47,19 +48,18 @@ export const HomePage = () => {
   const handleInvestigate = async () => {
     if (!query.trim() && !selectedFile) return;
     
-    // Hardcoded demo intercept for file upload
-    if (selectedFile) {
-      setShowProgress(true);
-      return;
-    }
-    
     setLoading(true);
     try {
-      const res = await api.startResearch(query, depth);
-      setActiveSessionId(res.session_id);
+      let res;
+      if (selectedFile) {
+        res = await api.uploadDocument(selectedFile, query, depth);
+      } else {
+        res = await api.startResearch(query, depth);
+      }
+      navigate(`/court/${res.session_id}`);
     } catch (err) {
       console.error(err);
-      alert('Failed to initiate research. Please make sure the backend server is running and API keys are set.');
+      alert('Failed to initiate investigation. Please make sure the backend server is running.');
     } finally {
       setLoading(false);
     }
@@ -113,7 +113,7 @@ export const HomePage = () => {
 
         {showProgress ? (
           <div className="mb-20">
-            <MultiAgentProgress onComplete={() => navigate('/report/demo')} />
+            <MultiAgentProgress onComplete={() => navigate(demoTarget)} />
           </div>
         ) : activeSessionId ? (
           <div className="mb-20">
@@ -201,7 +201,10 @@ export const HomePage = () => {
         {/* Demo Mode Button */}
         <div className="flex justify-center mb-20">
           <button
-            onClick={() => navigate('/court/demo')}
+            onClick={() => {
+              setSelectedFile({ name: 'India_Economy_Report.pdf' });
+              navigate('/court/demo');
+            }}
             className="px-8 py-3 rounded-full border border-emerald-500/50 bg-emerald-500/10 text-emerald-400 font-bold hover:bg-emerald-500/20 transition-all flex items-center gap-2"
           >
             <FileText className="w-5 h-5" />

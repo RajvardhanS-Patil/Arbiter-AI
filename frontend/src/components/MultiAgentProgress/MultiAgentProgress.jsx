@@ -146,7 +146,7 @@ export const MultiAgentProgress = ({ onComplete }) => {
               <div className="h-1.5 w-full bg-black/50 rounded-full overflow-hidden">
                 <div 
                   className={`h-full ${agent.progressColor} transition-all duration-300 ease-out`}
-                  style={{ width: \`\${val}%\` }}
+                  style={{ width: `${val}%` }}
                 />
               </div>
             </div>

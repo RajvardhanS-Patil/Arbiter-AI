@@ -42,12 +42,23 @@ async def start_research(request: ResearchRequest, background_tasks: BackgroundT
     """Start a new research session in the background."""
     session_id = str(uuid.uuid4())
     
+    # Check if query is a URL
+    query_text = request.query
+    if query_text.strip().startswith("http://") or query_text.strip().startswith("https://"):
+        try:
+            from services.search_service import search_service
+            page_text = await search_service.fetch_page_content(query_text.strip())
+            if page_text:
+                query_text = f"Analyze the following web page content from {query_text.strip()} for factual claims:\n\n{page_text}"
+        except Exception as e:
+            print(f"Failed to fetch URL {query_text}: {e}")
+            
     # Save the session to the DB as pending
     db = await db_module.get_db()
     try:
         await db_module.create_session(db, {
             "id": session_id,
-            "query": request.query,
+            "query": request.query,  # Keep the original query/URL for the title
             "depth": request.depth
         })
     finally:
@@ -57,7 +68,7 @@ async def start_research(request: ResearchRequest, background_tasks: BackgroundT
     task = asyncio.create_task(
         run_pipeline_wrapper(
             session_id=session_id,
-            query=request.query,
+            query=query_text,
             depth=request.depth,
             max_claims=request.max_claims,
             enable_debate=request.enable_debate,

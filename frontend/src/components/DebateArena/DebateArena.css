@@ -49,228 +49,82 @@
   box-shadow: 0 10px 20px rgba(0,0,0,0.6);
 }
 
-/* Base Cartoon Character */
+/* Base AI Avatar Character */
 .character {
   position: absolute;
   display: flex;
   flex-direction: column;
   align-items: center;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5));
+}
+
+/* Image Avatars */
+.avatar-img {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  background: #111;
   transition: all 0.3s ease;
 }
 
-.head {
-  width: 80px;
-  height: 90px;
-  background: #fcd4b6;
-  border-radius: 40px 40px 30px 30px;
-  position: relative;
-  box-shadow: inset -5px -5px 15px rgba(0,0,0,0.2);
-  z-index: 2;
+.speaking .avatar-img {
+  transform: scale(1.05);
+  filter: brightness(1.2);
 }
 
-.eyes {
-  position: absolute;
-  top: 35px;
-  width: 100%;
-  display: flex;
-  justify-content: space-around;
-  padding: 0 15px;
-}
-
-.eye {
-  width: 12px;
-  height: 14px;
-  background: #333;
-  border-radius: 50%;
-  position: relative;
-}
-
-.eye::after {
-  content: '';
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  width: 4px;
-  height: 4px;
-  background: white;
-  border-radius: 50%;
-}
-
-.mouth {
-  position: absolute;
-  bottom: 15px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 30px;
-  height: 10px;
-  border-bottom: 3px solid #333;
-  border-radius: 0 0 15px 15px;
-  transition: all 0.2s;
-}
-
-.speaking .mouth {
-  height: 20px;
-  background: #801010;
-  border-radius: 50% 50% 15px 15px;
-  border: none;
-  animation: talk 0.3s infinite alternate;
-}
-
-@keyframes talk {
-  0% { height: 10px; }
-  100% { height: 25px; }
-}
-
-.body {
-  width: 110px;
-  height: 120px;
-  border-radius: 40px 40px 0 0;
-  position: relative;
-  margin-top: -10px;
-  z-index: 1;
-}
-
-/* Specific Characters */
+/* ----------------------------------- */
+/* 1. FACT VERIFIER                    */
+/* ----------------------------------- */
 .verifier {
-  bottom: 20px;
+  bottom: 30px;
   left: 10%;
-  animation: float 4s ease-in-out infinite;
+  animation: float-ai 4s ease-in-out infinite;
 }
 
-.verifier .head { background: #ffdfc4; }
-.verifier .hair {
-  position: absolute;
-  top: -10px;
-  left: -5px;
-  width: 90px;
-  height: 40px;
-  background: #3c2a1e;
-  border-radius: 50px 50px 0 0;
-}
-.verifier .body {
-  background: linear-gradient(to right, #1e3a8a, #2563eb);
-  box-shadow: inset -5px -5px 15px rgba(0,0,0,0.4);
-}
-.verifier .tie {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 15px;
-  height: 60px;
-  background: #dc2626;
-  clip-path: polygon(0 0, 100% 0, 80% 100%, 20% 100%);
-}
-.verifier .shirt {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 30px;
-  height: 20px;
-  background: white;
-  clip-path: polygon(0 0, 100% 0, 50% 100%);
+@keyframes float-ai {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
+.verifier .avatar-img {
+  border-color: #3b82f6;
+  box-shadow: 0 0 30px rgba(59,130,246,0.5), 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+/* ----------------------------------- */
+/* 2. DEVIL'S ADVOCATE                 */
+/* ----------------------------------- */
 .advocate {
-  bottom: 20px;
+  bottom: 30px;
   right: 10%;
-  animation: float 4s ease-in-out infinite 1s; /* Offset animation */
+  animation: float-ai 4s ease-in-out infinite 1s;
 }
 
-.advocate .head { background: #fcd4b6; }
-.advocate .hair {
-  position: absolute;
-  top: -15px;
-  left: 0;
-  width: 80px;
-  height: 35px;
-  background: #111;
-  clip-path: polygon(0 100%, 10% 0, 30% 80%, 50% 0, 70% 80%, 90% 0, 100% 100%);
+.advocate .avatar-img {
+  border-color: #ef4444;
+  box-shadow: 0 0 30px rgba(239,68,68,0.5), 0 10px 25px rgba(0, 0, 0, 0.5);
 }
-.advocate .body {
-  background: linear-gradient(to right, #7f1d1d, #dc2626);
-  box-shadow: inset 5px -5px 15px rgba(0,0,0,0.4);
-}
-.advocate .tie {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 15px;
-  height: 60px;
-  background: #111;
-  clip-path: polygon(0 0, 100% 0, 80% 100%, 20% 100%);
-}
-.advocate .shirt {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 30px;
-  height: 20px;
-  background: #333;
-  clip-path: polygon(0 0, 100% 0, 50% 100%);
-}
-.advocate .glasses {
-  position: absolute;
-  top: 32px;
-  width: 100%;
-  height: 20px;
-}
-.advocate .glasses::before, .advocate .glasses::after {
-  content: '';
-  position: absolute;
-  width: 30px;
-  height: 20px;
-  border: 2px solid #333;
-  border-radius: 5px;
-  background: rgba(255, 255, 255, 0.2);
-}
-.advocate .glasses::before { left: 8px; }
-.advocate .glasses::after { right: 8px; }
 
+/* ----------------------------------- */
+/* 3. JUDGE                            */
+/* ----------------------------------- */
 .judge {
-  top: 25px;
+  top: 40px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 15;
 }
 
-.judge .head { background: #e5b99e; width: 70px; height: 80px; }
-.judge .hair {
-  position: absolute;
-  top: -5px;
-  left: -10px;
-  width: 90px;
-  height: 90px;
-  background: #f3f4f6;
-  border-radius: 50px 50px 20px 20px;
-  z-index: -1;
+.judge .avatar-img {
+  width: 160px;
+  height: 160px;
+  border-color: #fbbf24;
+  box-shadow: 0 0 40px rgba(251,191,36,0.5), 0 10px 30px rgba(0, 0, 0, 0.6);
 }
-.judge .body {
-  background: #111;
-  width: 140px;
-  height: 80px;
-  border-radius: 20px 20px 0 0;
-}
-.judge .glasses {
-  position: absolute;
-  top: 30px;
-  width: 100%;
-  height: 15px;
-}
-.judge .glasses::before, .judge .glasses::after {
-  content: '';
-  position: absolute;
-  width: 25px;
-  height: 15px;
-  border: 2px solid gold;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-}
-.judge .glasses::before { left: 8px; }
-.judge .glasses::after { right: 8px; }
 
 .gavel-container {
   position: absolute;
@@ -341,8 +195,8 @@
 }
 
 .speech-bubble.left {
-  bottom: 150px;
-  left: 12%;
+  bottom: 190px;
+  left: 8%;
   background: linear-gradient(135deg, #1e3a8a, #3b82f6);
   border: 1px solid rgba(59, 130, 246, 0.5);
   border-bottom-left-radius: 5px;
@@ -359,8 +213,8 @@
 }
 
 .speech-bubble.right {
-  bottom: 150px;
-  right: 12%;
+  bottom: 190px;
+  right: 8%;
   background: linear-gradient(135deg, #7f1d1d, #ef4444);
   border: 1px solid rgba(239, 68, 68, 0.5);
   border-bottom-right-radius: 5px;
@@ -377,14 +231,26 @@
 }
 
 .speech-bubble.center {
-  top: 120px;
-  left: 50%;
-  transform: translateX(-50%) scale(0.8);
+  top: 100px;
+  right: calc(50% + 90px);
+  transform: scale(0.8);
   background: linear-gradient(135deg, #4a3825, #785a3a);
   border: 1px solid #bda881;
-  text-align: center;
+  text-align: right;
   border-radius: 20px;
 }
+
+.speech-bubble.center::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -15px;
+  transform: translateY(-50%);
+  border-width: 10px 0 10px 15px;
+  border-style: solid;
+  border-color: transparent transparent transparent #785a3a;
+}
+
 .speech-bubble.center.show {
   animation: bubblePopCenter 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
@@ -394,7 +260,7 @@
 }
 
 @keyframes bubblePopCenter {
-  to { opacity: 1; transform: translateX(-50%) scale(1); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 .bubble-title {

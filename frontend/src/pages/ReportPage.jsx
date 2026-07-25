@@ -26,14 +26,9 @@ export const ReportPage = () => {
         created_at: new Date().toISOString()
       });
       setClaims([
-        { id: '1', claim_text: 'India is one of the world\'s fastest-growing major economies.', confidence_score: 95, verdict: 'accepted', reasoning: 'Confirmed by IMF and World Bank data.' },
-        { id: '2', claim_text: 'India became the world\'s fifth-largest economy by nominal GDP.', confidence_score: 98, verdict: 'accepted', reasoning: 'Official ranking according to recent GDP figures.' },
-        { id: '3', claim_text: 'India has completely eliminated poverty nationwide.', confidence_score: 5, verdict: 'rejected', reasoning: 'False. Multidimensional poverty indexes show millions still below the poverty line.' },
-        { id: '4', claim_text: 'Agriculture contributes over 60% of India\'s GDP.', confidence_score: 10, verdict: 'rejected', reasoning: 'False. Agriculture is ~15-18% of GDP. The 60% figure relates to employment.' },
-        { id: '5', claim_text: 'The Indian Rupee is India\'s official currency.', confidence_score: 100, verdict: 'accepted', reasoning: 'Confirmed by the Reserve Bank of India.' },
-        { id: '6', claim_text: 'India has zero unemployment.', confidence_score: 0, verdict: 'rejected', reasoning: 'False. CMIE data tracks active unemployment rates.' },
-        { id: '7', claim_text: 'The services sector contributes the largest share of India\'s GDP.', confidence_score: 95, verdict: 'accepted', reasoning: 'Services make up over 50% of the GDP.' },
-        { id: '8', claim_text: 'India exports only agricultural products and no software services.', confidence_score: 2, verdict: 'rejected', reasoning: 'False. India is a global leader in software and IT services exports.' },
+        { id: '1', text: 'India is the 5th largest economy in the world by nominal GDP.', confidence_score: 98, verdict: 'accepted', judge_reasoning: 'The claim is factual and supported by credible institutions like the World Bank and IMF.' },
+        { id: '2', text: 'Agriculture contributes over 60% to India\'s GDP.', confidence_score: 12, verdict: 'rejected', judge_reasoning: 'The document conflates employment data with GDP contribution. This is a severe factual error.', fault_type: 'Hallucinated Statistic', corrected_version: 'Agriculture contributes approximately 15-18% to India\'s GDP, while it employs around 40-60% of the workforce.' },
+        { id: '3', text: 'India has completely eliminated extreme poverty as of 2024.', confidence_score: 15, verdict: 'rejected', judge_reasoning: 'The claim uses absolute terminology ("completely eliminated") which contradicts nuanced socioeconomic realities.', fault_type: 'Exaggerated / Absolute Claim', corrected_version: 'India has significantly reduced extreme poverty in recent years, though multidimensional poverty still affects a portion of the population.' }
       ]);
       setDebates([
         { claim_id: '3', id: 'd3', transcripts: "Verifier: Poverty data shows progress.\nAdvocate: Claim says 'completely eliminated', which is factually false per multidimensional index.\nJudge: Verdict Rejected." },
@@ -237,6 +232,25 @@ export const ReportPage = () => {
         </div>
       </div>
 
+      {/* Demo Insights (Hardcoded as requested) */}
+      {sessionId === 'demo' && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
+          <div className="glass-card p-6 border-l-4 border-l-red-500 rounded-r-2xl bg-red-500/5">
+            <h3 className="font-label-caps text-xs text-red-400 mb-2 uppercase tracking-widest font-bold flex items-center gap-2"><AlertTriangle className="w-4 h-4" /> Hallucinated / False Data Detected</h3>
+            <ul className="text-on-surface-variant text-sm space-y-2 list-disc ml-4 mt-3 text-left">
+              <li><strong className="text-white">Agriculture GDP Contribution:</strong> Document claims 60%, actual is ~15-18%. The author conflated GDP with employment figures.</li>
+              <li><strong className="text-white">Poverty Elimination:</strong> Document claims "completely eliminated" extreme poverty, which is an absolute term that contradicts current multidimensional poverty indexes.</li>
+            </ul>
+          </div>
+          <div className="glass-card p-6 border-l-4 border-l-emerald-500 rounded-r-2xl bg-emerald-500/5">
+            <h3 className="font-label-caps text-xs text-emerald-400 mb-2 uppercase tracking-widest font-bold flex items-center gap-2"><CheckCircle className="w-4 h-4" /> Verified Correct Data</h3>
+            <ul className="text-on-surface-variant text-sm space-y-2 list-disc ml-4 mt-3 text-left">
+              <li><strong className="text-white">Global Economic Ranking:</strong> India is indeed the 5th largest economy by nominal GDP, perfectly aligning with World Bank and IMF 2023-2024 reports.</li>
+            </ul>
+          </div>
+        </div>
+      )}
+
       {/* Tab Selectors */}
       <div className="flex border-b border-white/10 mb-8 overflow-x-auto gap-2">
         {[
@@ -327,6 +341,16 @@ export const ReportPage = () => {
                         <p className="text-on-surface-variant text-sm leading-relaxed">
                           {claim.judge_reasoning || 'The claim has been evaluated by the Arbiter AI multi-agent pipeline using multi-model consensus and adversarial cross-examination.'}
                         </p>
+                        
+                        {claim.fault_type && (
+                          <div className="mt-4 p-4 rounded-xl bg-red-500/5 border border-red-500/20 shadow-inner">
+                            <h6 className="font-label-caps text-[10px] text-red-400 font-bold uppercase mb-1">Detected Fault: {claim.fault_type}</h6>
+                            <p className="text-sm text-red-200/80 mb-4">The multi-agent pipeline flagged this claim for containing factual inaccuracies or hallucinations.</p>
+                            
+                            <h6 className="font-label-caps text-[10px] text-emerald-400 font-bold uppercase mb-1">Corrected Version</h6>
+                            <p className="text-sm text-emerald-200/80">{claim.corrected_version}</p>
+                          </div>
+                        )}
                       </div>
 
                       {/* Three Column Bottom Grid matching Stitch sheet */}

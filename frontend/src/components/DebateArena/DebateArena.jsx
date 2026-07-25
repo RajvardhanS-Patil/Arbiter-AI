@@ -230,14 +230,14 @@ export const DebateArena = ({ sessionId, topic, onComplete }) => {
       case 'agent_message':
         // General agent messages — show as dialogue from the appropriate side
         if (fromAgent === 'investigator' || fromAgent === 'verifier') {
-          if (content && content.length > 10) {
-            const shortContent = content.length > 120 ? content.substring(0, 120) + '...' : content;
-            enqueue('left', 'FACT VERIFIER', shortContent, 4000);
+          if (content && content.length > 5) {
+            const shortContent = content.length > 300 ? content.substring(0, 300) + '...' : content;
+            enqueue('left', 'FACT VERIFIER', shortContent, 4500);
           }
         } else if (fromAgent === 'devils_advocate') {
-          if (content && content.length > 10) {
-            const shortContent = content.length > 120 ? content.substring(0, 120) + '...' : content;
-            enqueue('right', "DEVIL'S ADVOCATE", shortContent, 4000);
+          if (content && content.length > 5) {
+            const shortContent = content.length > 300 ? content.substring(0, 300) + '...' : content;
+            enqueue('right', "DEVIL'S ADVOCATE", shortContent, 4500);
           }
         }
         break;
@@ -248,6 +248,9 @@ export const DebateArena = ({ sessionId, topic, onComplete }) => {
 
       case 'pipeline_completed':
       case 'report_ready':
+        if (data.metadata && data.metadata.stats) {
+          setStats(data.metadata.stats);
+        }
         setPipelinePercent(100);
         setPipelineDone(true);
         updateAgentStatus('synthesizer', 'COMPLETED');
@@ -285,25 +288,43 @@ export const DebateArena = ({ sessionId, topic, onComplete }) => {
     handleWebSocketEvent({ event: 'pipeline_started' });
     
     const sequence = [
+      // Investigator finds claims
       { delay: 3000, e: { event: 'agent_started', data: { from_agent: 'investigator' } } },
-      { delay: 6000, e: { event: 'agent_completed', data: { from_agent: 'investigator', content: 'Extracted 8 claims from "India\'s Economy: Mixed Facts".' } } },
+      { delay: 6000, e: { event: 'agent_completed', data: { from_agent: 'investigator', content: 'Extracted 3 key claims from "India\'s Economy: Mixed Facts".' } } },
       
-      { delay: 8000, e: { event: 'agent_started', data: { from_agent: 'verifier' } } },
-      { delay: 11000, e: { event: 'claim_verified', data: { metadata: { status: 'verified' }, content: 'Claim 1: IMF data confirms India is one of the fastest-growing major economies.' } } },
-      { delay: 15000, e: { event: 'claim_verified', data: { metadata: { status: 'verified' }, content: 'Claim 2: World Bank data verifies India became the 5th largest economy by nominal GDP.' } } },
-      { delay: 18000, e: { event: 'claim_verified', data: { metadata: { status: 'verified' }, content: 'Claim 5: RBI confirms the Indian Rupee is the official currency.' } } },
+      // DEBATE 1
+      { delay: 9000, e: { event: 'agent_started', data: { from_agent: 'verifier' } } },
+      { delay: 11000, e: { event: 'agent_message', data: { from_agent: 'verifier', content: 'Claim 1: "India is the 5th largest economy in the world by nominal GDP."' } } },
+      { delay: 15000, e: { event: 'agent_started', data: { from_agent: 'devils_advocate' } } },
+      { delay: 16000, e: { event: 'agent_message', data: { from_agent: 'devils_advocate', content: 'Wait, I challenge this! Is it based on current data or outdated projections?' } } },
+      { delay: 21000, e: { event: 'agent_message', data: { from_agent: 'verifier', content: 'I have cross-referenced this against the latest World Bank and IMF reports for 2023-2024. The data holds true.' } } },
+      { delay: 27000, e: { event: 'agent_message', data: { from_agent: 'devils_advocate', content: 'I concede on this point. The nominal GDP figures align with international monetary tracking.' } } },
       
-      { delay: 22000, e: { event: 'agent_started', data: { from_agent: 'devils_advocate' } } },
-      { delay: 25000, e: { event: 'claim_challenged', data: { content: 'Claim 3: False. Millions still live below the poverty line per multidimensional poverty indexes.' } } },
-      { delay: 29000, e: { event: 'claim_challenged', data: { content: 'Claim 4: False. Agriculture contributes ~15-18% to GDP, not over 60%. The 60% is employment.' } } },
-      { delay: 33000, e: { event: 'claim_challenged', data: { content: 'Claim 6: False. India has a measurable unemployment rate tracked by CMIE.' } } },
+      { delay: 31000, e: { event: 'agent_started', data: { from_agent: 'judge' } } },
+      { delay: 32000, e: { event: 'claim_judged', data: { metadata: { verdict: 'verified' }, content: 'The claim is factual and supported by credible institutions.' } } },
       
-      { delay: 37000, e: { event: 'agent_started', data: { from_agent: 'judge' } } },
-      { delay: 40000, e: { event: 'claim_judged', data: { metadata: { verdict: 'verified' }, content: 'Claims 1, 2, 5, 7 are factual based on trusted sources.' } } },
-      { delay: 44000, e: { event: 'claim_judged', data: { metadata: { verdict: 'false' }, content: 'Claims 3, 4, 6, 8 are completely false and misleading.' } } },
+      // DEBATE 2
+      { delay: 38000, e: { event: 'agent_message', data: { from_agent: 'verifier', content: 'Claim 2: "Agriculture contributes over 60% to India\'s GDP."' } } },
+      { delay: 43000, e: { event: 'agent_message', data: { from_agent: 'devils_advocate', content: 'I strongly challenge this! That sounds like an employment statistic, not a GDP contribution.' } } },
+      { delay: 49000, e: { event: 'agent_message', data: { from_agent: 'verifier', content: 'Let me double-check... The source text asserts this is the economic value output.' } } },
+      { delay: 54000, e: { event: 'agent_message', data: { from_agent: 'devils_advocate', content: 'That is a hallucinated statistic. According to the Ministry of Statistics, agriculture contributes ~15-18% to the GDP. The 60% figure refers to the workforce dependent on it.' } } },
       
-      { delay: 47000, e: { event: 'agent_started', data: { from_agent: 'synthesizer' } } },
-      { delay: 50000, e: { event: 'report_ready', data: {} } }
+      { delay: 62000, e: { event: 'claim_judged', data: { metadata: { verdict: 'false' }, content: 'The document conflates employment data with GDP contribution. This is a severe factual error.' } } },
+
+      // DEBATE 3
+      { delay: 69000, e: { event: 'agent_message', data: { from_agent: 'verifier', content: 'Claim 3: "India has completely eliminated extreme poverty as of 2024."' } } },
+      { delay: 75000, e: { event: 'agent_message', data: { from_agent: 'devils_advocate', content: 'Objection! Multidimensional poverty indexes still show millions living below the poverty line.' } } },
+      { delay: 81000, e: { event: 'agent_message', data: { from_agent: 'verifier', content: 'The document cites a recent government report claiming a 0% rate in extreme poverty.' } } },
+      { delay: 87000, e: { event: 'agent_message', data: { from_agent: 'devils_advocate', content: '"Extreme poverty" is a very specific World Bank metric ($1.90/day). While significantly reduced, saying it is "completely eliminated" is absolute and misleading.' } } },
+
+      { delay: 95000, e: { event: 'claim_judged', data: { metadata: { verdict: 'false' }, content: 'The claim uses absolute terminology ("completely eliminated") which contradicts nuanced socioeconomic realities.' } } },
+
+      // Conclusion
+      { delay: 99000, e: { event: 'agent_completed', data: { from_agent: 'verifier' } } },
+      { delay: 100000, e: { event: 'agent_completed', data: { from_agent: 'devils_advocate' } } },
+      { delay: 101000, e: { event: 'agent_completed', data: { from_agent: 'judge' } } },
+      { delay: 102000, e: { event: 'agent_started', data: { from_agent: 'synthesizer' } } },
+      { delay: 105000, e: { event: 'report_ready', data: { metadata: { stats: { claims: 3, verified: 1, disputed: 2 } } } } }
     ];
 
     let timers = [];
@@ -408,50 +429,22 @@ export const DebateArena = ({ sessionId, topic, onComplete }) => {
           {/* Characters */}
           <div className={`character verifier ${currentDialogue?.side === 'left' ? 'speaking' : ''}`}>
             <div className="char-label">Fact Verifier</div>
-          <div className="hair"></div>
-          <div className="head">
-            <div className="eyes">
-              <div className="eye"></div><div className="eye"></div>
-            </div>
-            <div className={`mouth ${currentDialogue?.side === 'left' && !isTyping ? 'talking' : ''}`}></div>
+            <img src="/avatars/lawyer.avif" alt="Fact Verifier" className="avatar-img" />
           </div>
-          <div className="body">
-            <div className="shirt"></div>
-            <div className="tie"></div>
-          </div>
-        </div>
 
-        <div className={`character advocate ${currentDialogue?.side === 'right' ? 'speaking' : ''}`}>
-          <div className="char-label">Devil's Advocate</div>
-          <div className="hair"></div>
-          <div className="head">
-            <div className="glasses"></div>
-            <div className="eyes">
-              <div className="eye"></div><div className="eye"></div>
-            </div>
-            <div className={`mouth ${currentDialogue?.side === 'right' && !isTyping ? 'talking' : ''}`}></div>
+          <div className={`character advocate ${currentDialogue?.side === 'right' ? 'speaking' : ''}`}>
+            <div className="char-label">Devil's Advocate</div>
+            <img src="/avatars/bad.webp" alt="Devil's Advocate" className="avatar-img" />
           </div>
-          <div className="body">
-            <div className="shirt"></div>
-            <div className="tie"></div>
-          </div>
-        </div>
 
-        <div className={`character judge ${verdictActive ? 'verdict-active' : ''}`}>
-          <div className="hair"></div>
-          <div className="head">
-            <div className="glasses"></div>
-            <div className="eyes">
-              <div className="eye"></div><div className="eye"></div>
+          <div className={`character judge ${verdictActive ? 'verdict-active' : ''}`}>
+            <div className="char-label">The Arbiter</div>
+            <img src="/avatars/judge.png" alt="Judge" className="avatar-img" />
+            <div className="gavel-container">
+              <div className="gavel-handle"></div>
+              <div className="gavel-head"></div>
             </div>
-            <div className="mouth"></div>
           </div>
-          <div className="body"></div>
-          <div className="gavel-container">
-            <div className="gavel-handle"></div>
-            <div className="gavel-head"></div>
-          </div>
-        </div>
 
         {/* Speech Bubbles */}
         {currentDialogue && (
