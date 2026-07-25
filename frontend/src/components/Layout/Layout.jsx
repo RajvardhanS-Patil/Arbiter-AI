@@ -77,7 +77,7 @@ export const Layout = ({ children }) => {
           >
             <Menu className="w-6 h-6" />
           </button>
-          <Link to="/" className="font-display-lg text-headline-md tracking-tighter text-primary font-bold">
+          <Link to="/" className="font-display-lg text-2xl md:text-3xl tracking-tighter font-extrabold bg-gradient-to-r from-primary via-primary-container to-secondary bg-clip-text text-transparent drop-shadow-[0_0_8px_rgba(124,58,237,0.5)] hover:scale-105 transition-transform duration-300">
             ARBITER AI
           </Link>
           <div className="hidden md:flex items-center gap-6">
@@ -125,8 +125,8 @@ export const Layout = ({ children }) => {
             <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-surface-container-lowest"></div>
           </div>
           <div>
-            <h3 className="font-headline-md text-body-md text-primary leading-tight font-semibold">Arbiter AI</h3>
-            <p className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest">Precision Intelligence</p>
+            <h3 className="font-headline-md text-2xl bg-gradient-to-r from-primary via-primary-container to-secondary bg-clip-text text-transparent leading-tight font-extrabold drop-shadow-[0_0_8px_rgba(124,58,237,0.3)]">Arbiter AI</h3>
+            <p className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest mt-1">Precision Intelligence</p>
           </div>
         </div>
 
