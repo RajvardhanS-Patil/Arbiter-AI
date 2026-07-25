@@ -33,19 +33,19 @@ services:
       # Render automatically injects the frontend URL here
       - key: FRONTEND_URL
         fromService:
-          type: static
+          type: web
           name: arbiter-frontend
           envVarKey: RENDER_EXTERNAL_URL
 
   # ----------------------------------------
   # 2. Frontend (Vite Static Site)
   # ----------------------------------------
-  - type: static
+  - type: web
     name: arbiter-frontend
-    env: node
+    env: static
     rootDir: frontend
     buildCommand: npm install && npm run build
-    publishPath: dist
+    staticPublishPath: ./dist
     
     # Render static sites need this rewrite rule to support 
     # React/React-Router client-side routing.
