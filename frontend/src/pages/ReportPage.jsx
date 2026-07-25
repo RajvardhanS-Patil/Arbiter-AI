@@ -179,27 +179,27 @@ export const ReportPage = () => {
         >
           <ArrowLeft className="w-4 h-4" /> Back to Search
         </button>
-        <div className="flex gap-3">
+        <div className="flex gap-2 md:gap-3">
           <button 
             onClick={() => handleExport('pdf')}
             disabled={exportLoading}
-            className="flex items-center gap-2 bg-surface-container border border-white/10 hover:border-emerald-500/50 text-emerald-400 px-4 py-2 rounded-lg font-bold text-sm transition-all"
+            className="flex items-center gap-1 md:gap-2 bg-surface-container border border-white/10 hover:border-emerald-500/50 text-emerald-400 px-2 md:px-4 py-2 rounded-lg font-bold text-xs md:text-sm transition-all"
           >
-            <Download className="w-4 h-4" /> Export PDF
+            <Download className="w-4 h-4" /> <span className="hidden md:inline">Export PDF</span><span className="md:hidden">PDF</span>
           </button>
           <button 
             onClick={() => handleExport('markdown')}
             disabled={exportLoading}
-            className="flex items-center gap-2 bg-surface-container border border-white/10 hover:border-primary/30 text-on-surface px-4 py-2 rounded-lg font-bold text-sm transition-all"
+            className="flex items-center gap-1 md:gap-2 bg-surface-container border border-white/10 hover:border-primary/30 text-on-surface px-2 md:px-4 py-2 rounded-lg font-bold text-xs md:text-sm transition-all"
           >
-            <Download className="w-4 h-4" /> Export MD
+            <Download className="w-4 h-4" /> <span className="hidden md:inline">Export MD</span><span className="md:hidden">MD</span>
           </button>
           <button 
             onClick={() => handleExport('json')}
             disabled={exportLoading}
-            className="flex items-center gap-2 bg-primary-container text-on-primary-container hover:opacity-90 px-4 py-2 rounded-lg font-bold text-sm transition-all shadow-md shadow-primary-container/20"
+            className="flex items-center gap-1 md:gap-2 bg-primary-container text-on-primary-container hover:opacity-90 px-2 md:px-4 py-2 rounded-lg font-bold text-xs md:text-sm transition-all shadow-md shadow-primary-container/20"
           >
-            <Download className="w-4 h-4" /> Export JSON
+            <Download className="w-4 h-4" /> <span className="hidden md:inline">Export JSON</span><span className="md:hidden">JSON</span>
           </button>
         </div>
       </div>

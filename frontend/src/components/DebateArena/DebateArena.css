@@ -394,3 +394,50 @@
   animation: talk 0.3s infinite alternate;
 }
 
+@media (max-width: 768px) {
+  .debate-arena {
+    height: 400px;
+  }
+  .avatar-img {
+    width: 90px;
+    height: 90px;
+  }
+  .judge .avatar-img {
+    width: 100px;
+    height: 100px;
+  }
+  .verifier {
+    left: 5%;
+  }
+  .advocate {
+    right: 5%;
+  }
+  .judge {
+    top: 20px;
+  }
+  .bench {
+    height: 120px;
+  }
+  .judge-bench {
+    top: 60px;
+    width: 200px;
+    height: 80px;
+  }
+  .speech-bubble {
+    max-width: 220px;
+    padding: 10px 15px;
+    font-size: 12px;
+  }
+  .speech-bubble.left {
+    bottom: 130px;
+    left: 2%;
+  }
+  .speech-bubble.right {
+    bottom: 130px;
+    right: 2%;
+  }
+  .speech-bubble.center {
+    top: 80px;
+    right: 10%;
+  }
+}
