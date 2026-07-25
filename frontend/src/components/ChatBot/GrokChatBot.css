@@ -122,12 +122,14 @@
   font-size: 0.9375rem;
   line-height: 1.4;
   word-break: break-word;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .chat-message.user .chat-bubble {
   background-color: var(--color-primary);
   color: var(--color-on-primary);
   border-bottom-right-radius: 0.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .chat-message.assistant .chat-bubble {
@@ -140,6 +142,7 @@
 .chat-message.error .chat-bubble {
   background-color: var(--color-error-container);
   color: var(--color-on-error-container);
+  border: 1px solid var(--color-error);
   border-bottom-left-radius: 0.25rem;
 }
 
