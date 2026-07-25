@@ -4,6 +4,8 @@ import { Search, Bolt, ShieldAlert, FileText, CheckCircle, Clock, RefreshCw, Bar
 import { api } from '../services/api';
 import { DebateArena } from '../components/DebateArena/DebateArena';
 
+import { MultiAgentProgress } from '../components/MultiAgentProgress/MultiAgentProgress';
+
 export const HomePage = () => {
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
@@ -18,6 +20,7 @@ export const HomePage = () => {
     avgAccuracy: 92
   });
   const [activeSessionId, setActiveSessionId] = useState(null);
+  const [showProgress, setShowProgress] = useState(false);
 
   useEffect(() => {
     // Fetch recent sessions
@@ -43,14 +46,16 @@ export const HomePage = () => {
 
   const handleInvestigate = async () => {
     if (!query.trim() && !selectedFile) return;
+    
+    // Hardcoded demo intercept for file upload
+    if (selectedFile) {
+      setShowProgress(true);
+      return;
+    }
+    
     setLoading(true);
     try {
-      let res;
-      if (selectedFile) {
-        res = await api.uploadDocument(selectedFile, query, depth);
-      } else {
-        res = await api.startResearch(query, depth);
-      }
+      const res = await api.startResearch(query, depth);
       setActiveSessionId(res.session_id);
     } catch (err) {
       console.error(err);
@@ -106,7 +111,11 @@ export const HomePage = () => {
           Interrogate complex legal data with AI-driven precision. Define your depth, initiate verification, and command clarity.
         </p>
 
-        {activeSessionId ? (
+        {showProgress ? (
+          <div className="mb-20">
+            <MultiAgentProgress onComplete={() => navigate('/report/demo')} />
+          </div>
+        ) : activeSessionId ? (
           <div className="mb-20">
             <DebateArena sessionId={activeSessionId} topic={query || selectedFile?.name} />
           </div>
