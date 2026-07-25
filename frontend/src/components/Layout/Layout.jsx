@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Gavel, Eye, FileText, History, Zap, Settings, RefreshCw, X, Shield, Menu } from 'lucide-react';
 import { api } from '../../services/api';
+import { GrokChatBot } from '../ChatBot/GrokChatBot';
 
 export const Layout = ({ children }) => {
   const location = useLocation();
@@ -56,8 +57,8 @@ export const Layout = ({ children }) => {
         </div>
         <div className="flex items-center gap-4">
           <Link 
-            to={activeSession ? `/court/${activeSession}` : "#"} 
-            className={`font-body-md text-body-md font-medium transition-colors ${!activeSession ? 'hidden' : 'text-emerald-400 hover:text-emerald-300 animate-pulse'}`}
+            to={activeSession ? `/court/${activeSession}` : "/court/demo"} 
+            className={`font-body-md text-body-md font-medium transition-colors ${activeSession ? 'text-emerald-400 hover:text-emerald-300 animate-pulse' : 'text-on-surface-variant hover:text-primary'}`}
           >
             Live Court
           </Link>
@@ -99,9 +100,8 @@ export const Layout = ({ children }) => {
           </Link>
 
           <Link 
-            to={activeSession ? `/court/${activeSession}` : "#"} 
-            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${!activeSession ? 'opacity-50 cursor-not-allowed text-on-surface-variant' : isActive(`/court/${activeSession}`) ? 'text-primary border-l-4 border-primary-container bg-primary-container/10 font-bold' : 'text-emerald-400 hover:bg-surface-container-high hover:translate-x-1'}`}
-            onClick={(e) => !activeSession && e.preventDefault()}
+            to={activeSession ? `/court/${activeSession}` : "/court/demo"} 
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive(activeSession ? `/court/${activeSession}` : '/court/demo') ? 'text-primary border-l-4 border-primary-container bg-primary-container/10 font-bold' : 'text-emerald-400 hover:bg-surface-container-high hover:translate-x-1'}`}
           >
             <Zap className={`w-5 h-5 ${activeSession ? 'animate-pulse' : ''}`} />
             <span className="font-label-caps text-label-caps">Live Court</span>
@@ -141,6 +141,9 @@ export const Layout = ({ children }) => {
           <span className="font-label-caps text-[10px]">Archive</span>
         </Link>
       </nav>
+
+      {/* Global AI Chatbot */}
+      <GrokChatBot />
     </div>
   );
 };

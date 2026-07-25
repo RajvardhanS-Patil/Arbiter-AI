@@ -9,6 +9,11 @@ export const CourtPage = () => {
   const [topic, setTopic] = useState('Loading session...');
 
   useEffect(() => {
+    if (sessionId === 'demo') {
+      setTopic('Courtroom Preview (No Active Session)');
+      return;
+    }
+
     // Fetch session details to get the topic/query
     api.getSessionStatus(sessionId)
       .then(res => {

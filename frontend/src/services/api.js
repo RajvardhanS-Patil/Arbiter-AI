@@ -7,6 +7,22 @@ const BASE_URL = '/api/v1';
 
 export const api = {
   /**
+   * Send messages to the AI Chatbot endpoint.
+   */
+  sendChatMessage: async (messages) => {
+    const response = await fetch(`${BASE_URL}/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages })
+    });
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || 'Failed to send chat message');
+    }
+    return response.json();
+  },
+
+  /**
    * Start a new research session.
    */
   startResearch: async (query, depth = 'standard', maxClaims = 15, enableDebate = true, enableMultiModel = true) => {

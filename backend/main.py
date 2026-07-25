@@ -50,11 +50,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from routes.chat import router as chat_router
+
 # Include routes
 app.include_router(research_router, prefix="/api/v1", tags=["Research"])
 app.include_router(reports_router, prefix="/api/v1", tags=["Reports"])
 app.include_router(sessions_router, prefix="/api/v1", tags=["Sessions"])
 app.include_router(upload_router, prefix="/api/v1", tags=["Upload"])
+app.include_router(chat_router, prefix="/api/v1", tags=["Chat"])
 app.include_router(ws_router, tags=["WebSocket"])
 
 

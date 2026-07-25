@@ -16,10 +16,12 @@ class Settings:
     # AI Providers
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
     GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
+    XAI_API_KEY: str = os.getenv("XAI_API_KEY", "")
     
     # Models
     GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
     GROQ_MODEL: str = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+    XAI_MODEL: str = os.getenv("XAI_MODEL", "grok-beta")
     
     # Server
     BACKEND_PORT: int = int(os.getenv("BACKEND_PORT", "8000"))

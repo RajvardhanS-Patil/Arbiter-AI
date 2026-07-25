@@ -275,11 +275,38 @@ export const DebateArena = ({ sessionId, topic, onComplete }) => {
     }
   }, [enqueue]);
 
-  useWebSocket(sessionId, handleWebSocketEvent);
+  useWebSocket(sessionId === 'demo' ? null : sessionId, handleWebSocketEvent);
+
+  // Demo mode
+  useEffect(() => {
+    if (sessionId !== 'demo') return;
+    
+    // Simulate pipeline start
+    handleWebSocketEvent({ event: 'pipeline_started' });
+    
+    const sequence = [
+      { delay: 3000, e: { event: 'agent_started', data: { from_agent: 'investigator' } } },
+      { delay: 7000, e: { event: 'agent_completed', data: { from_agent: 'investigator', content: 'Found 1 claims.' } } },
+      { delay: 8000, e: { event: 'agent_started', data: { from_agent: 'verifier' } } },
+      { delay: 10000, e: { event: 'claim_verified', data: { metadata: { status: 'verified' }, content: 'Claim 1: The sky is blue.' } } },
+      { delay: 13000, e: { event: 'agent_started', data: { from_agent: 'devils_advocate' } } },
+      { delay: 15000, e: { event: 'claim_challenged', data: { content: 'Claim 1: But what about sunset?' } } },
+      { delay: 18000, e: { event: 'agent_started', data: { from_agent: 'judge' } } },
+      { delay: 20000, e: { event: 'claim_judged', data: { metadata: { verdict: 'verified' }, content: 'Claim 1 — It is mostly blue.' } } }
+    ];
+
+    let timers = [];
+    sequence.forEach((item) => {
+      const timer = setTimeout(() => handleWebSocketEvent(item.e), item.delay);
+      timers.push(timer);
+    });
+
+    return () => timers.forEach(clearTimeout);
+  }, [sessionId, handleWebSocketEvent]);
 
   // Also poll session status periodically to update progress even if WS events are sparse
   useEffect(() => {
-    if (!sessionId || pipelineDone) return;
+    if (!sessionId || pipelineDone || sessionId === 'demo') return;
     
     const pollInterval = setInterval(async () => {
       try {
