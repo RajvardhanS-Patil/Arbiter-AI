@@ -18,6 +18,34 @@ export const ReportPage = () => {
   useEffect(() => {
     if (!sessionId) return;
     
+    if (sessionId === 'demo') {
+      setReport({
+        id: 'demo',
+        query: "India's Economy: Mixed Facts",
+        overall_confidence: 50,
+        created_at: new Date().toISOString()
+      });
+      setClaims([
+        { id: '1', claim_text: 'India is one of the world\'s fastest-growing major economies.', confidence_score: 95, verdict: 'accepted', reasoning: 'Confirmed by IMF and World Bank data.' },
+        { id: '2', claim_text: 'India became the world\'s fifth-largest economy by nominal GDP.', confidence_score: 98, verdict: 'accepted', reasoning: 'Official ranking according to recent GDP figures.' },
+        { id: '3', claim_text: 'India has completely eliminated poverty nationwide.', confidence_score: 5, verdict: 'rejected', reasoning: 'False. Multidimensional poverty indexes show millions still below the poverty line.' },
+        { id: '4', claim_text: 'Agriculture contributes over 60% of India\'s GDP.', confidence_score: 10, verdict: 'rejected', reasoning: 'False. Agriculture is ~15-18% of GDP. The 60% figure relates to employment.' },
+        { id: '5', claim_text: 'The Indian Rupee is India\'s official currency.', confidence_score: 100, verdict: 'accepted', reasoning: 'Confirmed by the Reserve Bank of India.' },
+        { id: '6', claim_text: 'India has zero unemployment.', confidence_score: 0, verdict: 'rejected', reasoning: 'False. CMIE data tracks active unemployment rates.' },
+        { id: '7', claim_text: 'The services sector contributes the largest share of India\'s GDP.', confidence_score: 95, verdict: 'accepted', reasoning: 'Services make up over 50% of the GDP.' },
+        { id: '8', claim_text: 'India exports only agricultural products and no software services.', confidence_score: 2, verdict: 'rejected', reasoning: 'False. India is a global leader in software and IT services exports.' },
+      ]);
+      setDebates([
+        { claim_id: '3', id: 'd3', transcripts: "Verifier: Poverty data shows progress.\nAdvocate: Claim says 'completely eliminated', which is factually false per multidimensional index.\nJudge: Verdict Rejected." },
+        { claim_id: '4', id: 'd4', transcripts: "Advocate: Agriculture is ~15-18% of GDP. 60% is employment, not GDP.\nJudge: Verdict Rejected." },
+        { claim_id: '6', id: 'd6', transcripts: "Advocate: Zero unemployment is mathematically impossible for any major economy. CMIE data proves otherwise.\nJudge: Verdict Rejected." },
+        { claim_id: '8', id: 'd8', transcripts: "Advocate: India is one of the world's largest IT and software exporters.\nJudge: Verdict Rejected." },
+      ]);
+      setSources([]);
+      setContradictions([]);
+      return;
+    }
+    
     // Fetch report info
     api.getReport(sessionId)
       .then(setReport)
@@ -49,6 +77,11 @@ export const ReportPage = () => {
   }, [sessionId]);
 
   const handleExport = async (format) => {
+    if (sessionId === 'demo' && format === 'pdf') {
+      window.print();
+      return;
+    }
+    
     setExportLoading(true);
     try {
       const res = await api.exportReport(sessionId, format);
@@ -152,6 +185,13 @@ export const ReportPage = () => {
           <ArrowLeft className="w-4 h-4" /> Back to Search
         </button>
         <div className="flex gap-3">
+          <button 
+            onClick={() => handleExport('pdf')}
+            disabled={exportLoading}
+            className="flex items-center gap-2 bg-surface-container border border-white/10 hover:border-emerald-500/50 text-emerald-400 px-4 py-2 rounded-lg font-bold text-sm transition-all"
+          >
+            <Download className="w-4 h-4" /> Export PDF
+          </button>
           <button 
             onClick={() => handleExport('markdown')}
             disabled={exportLoading}

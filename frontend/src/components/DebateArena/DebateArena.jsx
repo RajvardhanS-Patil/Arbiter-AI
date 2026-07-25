@@ -286,13 +286,24 @@ export const DebateArena = ({ sessionId, topic, onComplete }) => {
     
     const sequence = [
       { delay: 3000, e: { event: 'agent_started', data: { from_agent: 'investigator' } } },
-      { delay: 7000, e: { event: 'agent_completed', data: { from_agent: 'investigator', content: 'Found 1 claims.' } } },
+      { delay: 6000, e: { event: 'agent_completed', data: { from_agent: 'investigator', content: 'Extracted 8 claims from "India\'s Economy: Mixed Facts".' } } },
+      
       { delay: 8000, e: { event: 'agent_started', data: { from_agent: 'verifier' } } },
-      { delay: 10000, e: { event: 'claim_verified', data: { metadata: { status: 'verified' }, content: 'Claim 1: The sky is blue.' } } },
-      { delay: 13000, e: { event: 'agent_started', data: { from_agent: 'devils_advocate' } } },
-      { delay: 15000, e: { event: 'claim_challenged', data: { content: 'Claim 1: But what about sunset?' } } },
-      { delay: 18000, e: { event: 'agent_started', data: { from_agent: 'judge' } } },
-      { delay: 20000, e: { event: 'claim_judged', data: { metadata: { verdict: 'verified' }, content: 'Claim 1 — It is mostly blue.' } } }
+      { delay: 11000, e: { event: 'claim_verified', data: { metadata: { status: 'verified' }, content: 'Claim 1: IMF data confirms India is one of the fastest-growing major economies.' } } },
+      { delay: 15000, e: { event: 'claim_verified', data: { metadata: { status: 'verified' }, content: 'Claim 2: World Bank data verifies India became the 5th largest economy by nominal GDP.' } } },
+      { delay: 18000, e: { event: 'claim_verified', data: { metadata: { status: 'verified' }, content: 'Claim 5: RBI confirms the Indian Rupee is the official currency.' } } },
+      
+      { delay: 22000, e: { event: 'agent_started', data: { from_agent: 'devils_advocate' } } },
+      { delay: 25000, e: { event: 'claim_challenged', data: { content: 'Claim 3: False. Millions still live below the poverty line per multidimensional poverty indexes.' } } },
+      { delay: 29000, e: { event: 'claim_challenged', data: { content: 'Claim 4: False. Agriculture contributes ~15-18% to GDP, not over 60%. The 60% is employment.' } } },
+      { delay: 33000, e: { event: 'claim_challenged', data: { content: 'Claim 6: False. India has a measurable unemployment rate tracked by CMIE.' } } },
+      
+      { delay: 37000, e: { event: 'agent_started', data: { from_agent: 'judge' } } },
+      { delay: 40000, e: { event: 'claim_judged', data: { metadata: { verdict: 'verified' }, content: 'Claims 1, 2, 5, 7 are factual based on trusted sources.' } } },
+      { delay: 44000, e: { event: 'claim_judged', data: { metadata: { verdict: 'false' }, content: 'Claims 3, 4, 6, 8 are completely false and misleading.' } } },
+      
+      { delay: 47000, e: { event: 'agent_started', data: { from_agent: 'synthesizer' } } },
+      { delay: 50000, e: { event: 'report_ready', data: {} } }
     ];
 
     let timers = [];

@@ -173,7 +173,7 @@ export const HomePage = () => {
         </div>
 
         {/* Investigation Modes */}
-        <div className="flex flex-wrap justify-center gap-4 mb-20">
+        <div className="flex flex-wrap justify-center gap-4 mb-8">
           {['quick', 'standard', 'deep'].map((mode) => (
             <button
               key={mode}
@@ -187,6 +187,17 @@ export const HomePage = () => {
               {mode.charAt(0).toUpperCase() + mode.slice(1)}
             </button>
           ))}
+        </div>
+
+        {/* Demo Mode Button */}
+        <div className="flex justify-center mb-20">
+          <button
+            onClick={() => navigate('/court/demo')}
+            className="px-8 py-3 rounded-full border border-emerald-500/50 bg-emerald-500/10 text-emerald-400 font-bold hover:bg-emerald-500/20 transition-all flex items-center gap-2"
+          >
+            <FileText className="w-5 h-5" />
+            Run PDF Fact-Check Demo
+          </button>
         </div>
         </>
         )}
