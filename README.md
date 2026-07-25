@@ -1,114 +1,87 @@
-# ⚖️ Arbiter AI — Autonomous Multi-Agent Research & Fact-Verification System
+# Arbiter AI ⚖️
 
-**Domain:** Gen AI | **Theme:** "The Court of Truth"
-Built for the **InnovaHack 24-Hour Hackathon**.
+Arbiter AI is a real-time, multi-agent fact-checking and investigation platform. It employs a swarm of specialized AI agents to analyze complex claims, debate evidence, and synthesize high-accuracy verdicts. The platform features a live "Debate Arena" where users can watch the AI agents deliberate over facts in real-time using WebSockets.
 
-Arbiter AI is a multi-agent pipeline designed to solve one of Generative AI's biggest problems: **hallucinations and unverified claims**. By creating an adversarial courtroom-style environment, agents challenge, defend, and arbitrate claims to produce structured, citation-backed intelligence reports with verified confidence scoring.
+## 🚀 Features
 
----
+- **Multi-Agent Architecture**: A custom LLM pipeline featuring specialized roles: Orchestrator, Investigator, Fact Verifier, Devil's Advocate, Judge, and Synthesizer.
+- **Live Debate Arena**: Real-time WebSocket streaming of the internal AI deliberation process, visualized as a courtroom debate.
+- **Document & Text Analysis**: Upload PDFs, TXTs, or paste claims directly for automated fact-checking.
+- **Dynamic Reporting**: Generates detailed markdown, JSON, and PDF reports with contradiction heat maps, source citations, and confidence scoring.
+- **Responsive UI**: A modern, glassmorphism-inspired UI built with React and Tailwind CSS, fully optimized for both desktop and mobile.
 
-## 🚀 8 Unique Features That Set Us Apart
+## 🛠️ Tech Stack
 
-1.  **⚔️ Agent Debate Arena**: Sequential validation is replaced by structured debate rounds where the *Verifier* defends claims and the *Devil's Advocate* attacks them with counter-evidence, logical fallacies, and bias flags.
-2.  **🧬 Claim DNA & Genealogy**: Every claim receives a unique cryptographic fingerprint reflecting its text, cited sources, and lifecycle history. The lineage shows its transition from extraction (`BORN`) to cross-reference (`VERIFIED`), adversarial challenge (`CHALLENGED`), and verdict (`JUDGED`).
-3.  **🔥 Contradiction Heat Map**: An interactive matrix visualization comparing extracted claims. Conflicting claims are flagged dynamically with pulsing colored nodes showing contradiction strengths.
-4.  **🤖 Multi-Model Consensus**: Employs a jury system (using **Google Gemini** and **Groq LLaMA 3** concurrently) where models vote on claim verdicts, adjusting scores based on agreement ratios.
-5.  **📡 Real-time Agent Observatory**: A mission-control style dashboard displaying inter-agent WebSocket communications, live activity state updates, and pipeline progress graphs.
-6.  **⏰ Temporal Decay & Recency**: Claims are date-aware; older claims receive penalties while recent citations receive confidence boosts.
-7.  **🕵️ Source Credibility Scoring**: A custom scoring engine evaluating domain authority tiers and content structure quality (hedging terms, numbers, sensationalism).
-8.  **📊 Interactive Drill-Down Reports**: A comprehensive fact-checking brief allowing users to expand claim cards to view source snippets, full debates, and DNA lineage.
+### Frontend
+- **Framework**: React 18 with Vite
+- **Styling**: Tailwind CSS (with custom utility classes and animations)
+- **Icons**: Lucide React
+- **Real-time**: Native WebSockets (`useWebSocket` custom hook)
+- **Routing**: React Router DOM
 
----
+### Backend
+- **Framework**: FastAPI (Python)
+- **AI/LLM**: Groq API (Llama 3 70B/8B models for blazing-fast inference)
+- **Concurrency**: `asyncio` for parallel agent execution
+- **Real-time**: FastAPI WebSockets
+- **Document Parsing**: PyPDF2
+- **CORS & Middleware**: Configured for cross-origin production deployments
 
-## 🏛️ Multi-Agent Architecture
+## ⚙️ Local Development Setup
 
-```
-User Query
-    │
-    ▼
-┌──────────────┐
-│ Orchestrator  │──────────── Real-time Events (WS) ──▶ Observatory Dashboard
-└──────┬───────┘
-       │
-       ▼
-┌──────────────┐
-│ Investigator  │ ◀── Web Search & Wikipedia (DDG / MediaWiki API)
-└──────┬───────┘
-       │ [Atomic Claims]
-       ▼
-┌──────────────┐
-│   Verifier   │ ◀── Independent Verification Sources
-└──────┬───────┘
-       │ [Verified Claims]
-       ▼
-┌──────────────────┐
-│ Devil's Advocate  │ ◀── Adversarial Counter-Evidence
-└──────┬───────────┘
-       │ [Challenged Claims]
-       ▼
-┌──────────────┐
-│    Judge     │ ◀── Multi-Model Consensus (Gemini + Groq LLaMA)
-└──────┬───────┘
-       │ [Judged Claims]
-       ▼
-┌──────────────┐
-│ Synthesizer  │ ◀── Report Narrative Compilation
-└──────┬───────┘
-       │
-       ▼
-Final Interactive Report
-```
-
----
-
-## 🛠️ Technology Stack (100% Free & Operational)
-
--   **Backend**: Python, FastAPI, SQLite (async via `aiosqlite`)
--   **AI Providers**: Google Gemini API (`gemini-2.0-flash`), Groq API (`llama-3.3-70b-versatile`)
--   **Search**: DuckDuckGo search library, Wikipedia/MediaWiki API
--   **Frontend**: React (Vite), Tailwind CSS (Vanilla transitions & custom glassmorphism)
--   **Real-time**: FastAPI WebSockets
-
----
-
-## ⚡ Quick Start & Setup
-
-### 1. Clone & Set Environment Variables
-Copy `.env.example` to `.env` in the root folder and add your free API keys:
-```env
-GEMINI_API_KEY=your_free_gemini_api_key
-GROQ_API_KEY=your_free_groq_api_key
-```
-
-### 2. Start Backend Server
+### 1. Clone the repository
 ```bash
-# Go to backend
+git clone https://github.com/RajvardhanS-Patil/Arbiter-AI.git
+cd Arbiter-AI
+```
+
+### 2. Backend Setup
+```bash
 cd backend
+
+# Create a virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows use: venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
 
-# Run ASGI server
-uvicorn main:app --reload --port 8000
-```
-Swagger API docs will be available at `http://localhost:8000/docs`.
+# Create a .env file and add your Groq API Key
+echo "GROQ_API_KEY=your_groq_api_key_here" > .env
 
-### 3. Start Frontend Dashboard
+# Run the FastAPI server
+uvicorn main:app --reload
+```
+The backend will run at `http://localhost:8000`.
+
+### 3. Frontend Setup
 ```bash
-# Go to frontend
 cd frontend
 
 # Install dependencies
 npm install
 
-# Start Vite hot reloader
+# Create a .env file for the frontend (optional for local, required for production)
+echo "VITE_API_URL=http://localhost:8000" > .env
+
+# Start the Vite development server
 npm run dev
 ```
-Open `http://localhost:5173` in your browser.
+The frontend will run at `http://localhost:5173`.
 
----
+## 🌐 Production Deployment
 
-## 🎯 Sample Interrogations to Try
--   *Is global temperature increase accelerating faster than 20th century predictions?*
--   *What is the impact of recent appellate court rulings on the classification of crypto utility tokens?*
--   *Did clean energy investments outpace fossil fuel funding in 2024?*
+- **Backend**: Hosted on Render (Web Service). Requires the `GROQ_API_KEY` environment variable.
+- **Frontend**: Hosted on Render (Static Site). Requires the `VITE_API_URL` environment variable pointing to the deployed backend URL (e.g., `https://arbiter-backend.onrender.com`).
+
+## 🧠 How the AI Pipeline Works
+
+1. **Investigator**: Extracts core, falsifiable claims from the user's input or uploaded document.
+2. **Fact Verifier**: Cross-references the claims against knowledge bounds, searching for supporting evidence.
+3. **Devil's Advocate**: Actively searches for contradictions, logical fallacies, or opposing viewpoints.
+4. **Judge (The Arbiter)**: Weighs the arguments from the Verifier and Advocate to determine a final verdict (Verified, Disputed, or False) with a confidence score.
+5. **Synthesizer**: Compiles the entire deliberation into a cohesive, structured report.
+
+## 📄 License
+
+This project was built for InnovaHack.
