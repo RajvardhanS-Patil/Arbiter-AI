@@ -1,0 +1,65 @@
+services:
+  # ----------------------------------------
+  # 1. Backend (FastAPI Web Service)
+  # ----------------------------------------
+  - type: web
+    name: arbiter-backend
+    env: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    
+    # We mount a permanent disk so your SQLite database (arbiter.db) 
+    # doesn't get wiped out every time the server restarts.
+    disk:
+      name: arbiter-data
+      mountPath: /data
+      sizeGB: 1
+      
+    envVars:
+      # Tell the backend to use the persistent disk for the database
+      - key: DATABASE_PATH
+        value: /data/arbiter.db
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      # You will need to fill these in on the Render Dashboard:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+        
+      # Render automatically injects the frontend URL here
+      - key: FRONTEND_URL
+        fromService:
+          type: static
+          name: arbiter-frontend
+          envVarKey: RENDER_EXTERNAL_URL
+
+  # ----------------------------------------
+  # 2. Frontend (Vite Static Site)
+  # ----------------------------------------
+  - type: static
+    name: arbiter-frontend
+    env: node
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    publishPath: dist
+    
+    # Render static sites need this rewrite rule to support 
+    # React/React-Router client-side routing.
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+        
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      # Inject the backend API URL into the frontend build
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: arbiter-backend
+          envVarKey: RENDER_EXTERNAL_URL
