@@ -138,7 +138,7 @@ export const GrokChatBot = () => {
       >
         <div className="flex items-center gap-2 pointer-events-none">
           <Sparkles className="w-5 h-5 text-primary" />
-          <span className="font-bold text-on-surface">Grok AI Chat</span>
+          <span className="font-bold text-on-surface">Verdictor AI</span>
         </div>
         <div className="flex items-center gap-1">
           <button 
