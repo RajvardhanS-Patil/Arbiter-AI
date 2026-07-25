@@ -4,6 +4,7 @@ import { Layout } from './components/Layout/Layout';
 import { HomePage } from './pages/HomePage';
 import { ObservatoryPage } from './pages/ObservatoryPage';
 import { ReportPage } from './pages/ReportPage';
+import { CourtPage } from './pages/CourtPage';
 import { HistoryPage } from './pages/HistoryPage';
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
       <Layout>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/court/:sessionId" element={<CourtPage />} />
           <Route path="/observatory/:sessionId" element={<ObservatoryPage />} />
           <Route path="/report/:sessionId" element={<ReportPage />} />
           <Route path="/history" element={<HistoryPage />} />

@@ -207,7 +207,7 @@ export const HomePage = () => {
             recentSessions.map((session) => (
               <div 
                 key={session.id} 
-                onClick={() => navigate(session.status === 'completed' ? `/report/${session.id}` : `/observatory/${session.id}`)}
+                onClick={() => navigate(session.status === 'completed' ? `/report/${session.id}` : `/court/${session.id}`)}
                 className="glass-card glass-card-hoverable p-6 rounded-2xl text-left flex flex-col h-full cursor-pointer"
               >
                 <div className="flex justify-between items-start mb-4">

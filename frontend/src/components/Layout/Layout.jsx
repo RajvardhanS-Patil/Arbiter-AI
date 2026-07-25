@@ -8,11 +8,21 @@ export const Layout = ({ children }) => {
   const [systemActive, setSystemActive] = useState(true);
   const [totalSessions, setTotalSessions] = useState(0);
 
+  const [activeSession, setActiveSession] = useState(null);
+
   useEffect(() => {
     // Fetch stats
     api.getSessions(1)
       .then(res => {
         setTotalSessions(res.total || 0);
+        if (res.sessions && res.sessions.length > 0) {
+          const latest = res.sessions[0];
+          if (latest.status === 'processing') {
+            setActiveSession(latest.id);
+          } else {
+            setActiveSession(null);
+          }
+        }
       })
       .catch(() => {});
   }, [location.pathname]);
@@ -45,6 +55,12 @@ export const Layout = ({ children }) => {
           </div>
         </div>
         <div className="flex items-center gap-4">
+          <Link 
+            to={activeSession ? `/court/${activeSession}` : "#"} 
+            className={`font-body-md text-body-md font-medium transition-colors ${!activeSession ? 'hidden' : 'text-emerald-400 hover:text-emerald-300 animate-pulse'}`}
+          >
+            Live Court
+          </Link>
           <Link to="/history" className="hidden md:block font-body-md text-body-md font-medium text-on-surface-variant hover:text-primary transition-colors">
             Sessions History
           </Link>
@@ -80,6 +96,15 @@ export const Layout = ({ children }) => {
           >
             <History className="w-5 h-5" />
             <span className="font-label-caps text-label-caps">Archive</span>
+          </Link>
+
+          <Link 
+            to={activeSession ? `/court/${activeSession}` : "#"} 
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${!activeSession ? 'opacity-50 cursor-not-allowed text-on-surface-variant' : isActive(`/court/${activeSession}`) ? 'text-primary border-l-4 border-primary-container bg-primary-container/10 font-bold' : 'text-emerald-400 hover:bg-surface-container-high hover:translate-x-1'}`}
+            onClick={(e) => !activeSession && e.preventDefault()}
+          >
+            <Zap className={`w-5 h-5 ${activeSession ? 'animate-pulse' : ''}`} />
+            <span className="font-label-caps text-label-caps">Live Court</span>
           </Link>
         </div>
 
