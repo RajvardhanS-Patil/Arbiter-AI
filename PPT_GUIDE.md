@@ -1,65 +1,64 @@
 # Arbiter AI: Pitch & Presentation Guide
 
-*This document is designed to give a non-technical teammate a complete understanding of the Arbiter AI project so they can build a compelling PowerPoint presentation (PPT).*
+*This document provides a complete understanding of the Arbiter AI project so you can build a compelling PowerPoint presentation (PPT). It closely follows the core problem statement and architecture of the build.*
 
 ---
 
 ## 1. Problem Statement (PS)
-Traditional dispute resolution, arbitration, and legal analysis are incredibly time-consuming, expensive, and opaque. Individuals and small businesses often lack access to rapid, impartial, and data-driven arbitration, leaving them overwhelmed by complex legal jargon and slow processes.
+One of the biggest problems with Generative AI today is **hallucinations and unverified claims**. When users ask complex questions or rely on AI for research, LLMs often invent facts or provide biased, single-perspective answers. There is no built-in mechanism for adversarial fact-checking or measuring the confidence of a claim.
 
 ## 2. Our Solution: Arbiter AI
-**Arbiter AI (Precision Intelligence)** is an advanced, AI-driven arbitration platform. It provides instant, impartial dispute analysis and simulated courtroom experiences. By leveraging ultra-fast AI inference, it democratizes access to legal intelligence through a seamless, modern, and highly intuitive user interface.
+**Arbiter AI ("The Court of Truth")** solves AI hallucinations by creating a **multi-agent adversarial pipeline**. Instead of trusting a single AI response, Arbiter AI simulates a courtroom. Multiple AI agents independently investigate, defend, attack (play Devil's Advocate), and judge claims to produce structured, citation-backed intelligence reports with verified confidence scores.
 
 ## 3. Key Features (The "Wow" Factor)
-- **Live Courtroom Simulations**: Users can enter a "Live Court" session where AI agents simulate legal proceedings. The AI analyzes arguments logically, pitting opposing viewpoints (e.g., Red vs. Blue dialogue) against each other to find the truth.
-- **Verdictor AI (Floating Assistant)**: A globally accessible, draggable, and persistent AI chatbot. No matter where the user is on the site, they can open Verdictor AI to fact-check claims or ask legal queries on the fly.
-- **Session History & Archiving**: Persistent tracking and archiving of all past arbitration sessions for transparency, compliance, and easy review.
-- **Premium UX/UI Design**: A highly polished, responsive interface featuring dynamic glassmorphism (frosted glass effects), fluid Dark/Light mode toggling, and interactive micro-animations (such as an interactive water-droplet cursor glow).
+- **⚔️ Agent Debate Arena**: The system replaces standard AI responses with a debate. The *Verifier* defends claims, while the *Devil's Advocate* attacks them with counter-evidence and logical fallacies.
+- **🤖 Multi-Model Consensus (The Jury)**: We use both **Google Gemini** and **Groq (LLaMA 3)** concurrently. Models vote on verdicts and adjust scores based on their agreement ratio, removing single-model bias.
+- **📡 Real-Time Agent Observatory**: A mission-control dashboard where users can watch the agents communicate via WebSockets live as they debate.
+- **🧬 Claim DNA & Heat Maps**: Every claim gets a cryptographic fingerprint showing its lifecycle (BORN -> VERIFIED -> CHALLENGED -> JUDGED) and interactive heat maps flag conflicting claims.
 
 ## 4. Technical Architecture (The Tech Stack)
-*How it's built under the hood.*
+**Frontend (The Observatory Dashboard):**
+- **React & Vite**: For lightning-fast UI rendering.
+- **Tailwind CSS**: Custom glassmorphism, responsive design, and smooth animations (like the cursor glow effect).
+- **WebSockets**: For real-time event streaming from the backend.
 
-**Frontend (User Interface):**
-- **React & Vite**: For lightning-fast performance and component-based UI building.
-- **Tailwind CSS**: For custom design tokens, theming, and complex, responsive layouts.
-- **Lucide React**: For sleek, modern iconography.
+**Backend (The Multi-Agent Engine):**
+- **FastAPI (Python)**: High-performance asynchronous backend.
+- **AI Models**: Google Gemini (`gemini-2.0-flash`) and Groq API (`llama-3.3-70b-versatile`).
+- **Data & Search**: `aiosqlite` for database management, DuckDuckGo & Wikipedia APIs for agent research.
 
-**Backend (The Brain):**
-- **FastAPI (Python)**: A high-performance, asynchronous API framework that handles user requests instantly.
-- **Groq API**: We use Groq's high-speed inference engine for our Large Language Models (LLM). This ensures the AI thinks and responds at blazing speeds.
-- **Uvicorn**: An lightning-fast server to host the Python backend.
-
-## 5. Implementation Highlights (What makes it technically impressive)
-- **Ultra-Low Latency AI**: By integrating FastAPI with Groq, the Verdictor AI provides near-instantaneous responses, creating a fluid conversational experience.
-- **Global State Orchestration**: The frontend architecture ensures that the Verdictor AI chatbot and user preferences (like Dark/Light mode) remain perfectly persistent even as the user navigates between different pages.
-- **Dynamic Theming Engine**: We built a custom CSS variable pipeline that seamlessly switches the entire application between a deep, immersive Dark Mode and a clean, accessible Light Mode instantly.
+## 5. Implementation Pipeline (How it works)
+1. **Orchestrator**: Receives the user query and manages the agents.
+2. **Investigator**: Scrapes the web (DuckDuckGo/Wikipedia) and extracts atomic claims.
+3. **Verifier**: Finds independent sources to back up the claims.
+4. **Devil's Advocate**: Actively searches for counter-evidence and logical flaws to attack the claim.
+5. **Judge**: Reviews the debate using Multi-Model Consensus (Gemini + Groq) and issues a verdict.
+6. **Synthesizer**: Compiles everything into a final, highly credible interactive report.
 
 ---
 
 ## 6. Slide-by-Slide Suggestions for the PPT
 
-Here is a recommended structure for the presentation:
-
 - **Slide 1: Title & Hook**
-  - **Visual:** Arbiter AI logo (with gradient text) and the slogan "Precision Intelligence."
-  - **Talking Point:** Welcome the audience and state the project name.
+  - **Visual:** Arbiter AI logo, "The Court of Truth", and team name.
+  - **Talking Point:** "We are solving Generative AI's biggest flaw: Hallucinations."
 
-- **Slide 2: The Problem**
-  - **Visual:** Icons representing time (clock), high costs (money), and confusion (maze).
-  - **Talking Point:** "Legal arbitration is broken. It's too slow, too expensive, and inaccessible for the average person."
+- **Slide 2: The Problem Statement**
+  - **Visual:** Examples of famous AI hallucinations or a diagram showing single-model bias.
+  - **Talking Point:** "Current AI gives you one unchecked answer. How do you know it's true?"
 
 - **Slide 3: The Solution (Arbiter AI)**
-  - **Visual:** A sleek mockup or screenshot of the dashboard.
-  - **Talking Point:** "Arbiter AI brings impartial, lightning-fast dispute resolution to your browser using advanced AI."
+  - **Visual:** A high-level overview of the "Courtroom" concept.
+  - **Talking Point:** "We don't rely on one AI. We force multiple AI agents to debate each other to find the truth."
 
-- **Slide 4: Core Features Demo**
-  - **Visual:** Screenshots of the "Live Court" and the draggable "Verdictor AI" chatbot.
-  - **Talking Point:** Highlight how users can watch AI debate cases logically and fact-check information in real-time.
+- **Slide 4: The Multi-Agent Pipeline (Implementation)**
+  - **Visual:** The architecture flow (Investigator -> Verifier -> Devil's Advocate -> Judge).
+  - **Talking Point:** Walk through how a claim is extracted, attacked, and judged. Highlight the use of Gemini + Groq working together.
 
-- **Slide 5: The Tech Stack**
-  - **Visual:** Logos of React, Tailwind CSS, FastAPI, Python, and Groq.
-  - **Talking Point:** "Built for speed and scale. We combined React's fluid UI with FastAPI and Groq's ultra-low latency LLMs."
+- **Slide 5: The Tech Stack & Dashboard**
+  - **Visual:** Screenshots of the sleek frontend (Live Court, Chatbot, Dark/Light mode) and logos of React, FastAPI, Gemini, and Groq.
+  - **Talking Point:** "Powered by FastAPI and React, users can watch the agents debate in real-time via WebSockets on our interactive dashboard."
 
-- **Slide 6: Business Value & Future**
-  - **Visual:** A roadmap or upwards trending chart.
-  - **Talking Point:** "Democratizing legal access. Future steps include saving sessions to a cloud database and adding multi-user live arbitration."
+- **Slide 6: Conclusion / Future Impact**
+  - **Visual:** Summary bullet points.
+  - **Talking Point:** "Arbiter AI paves the way for a future where AI research is inherently fact-checked, cited, and trustworthy."
