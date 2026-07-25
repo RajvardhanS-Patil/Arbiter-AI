@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Gavel, Eye, FileText, History, Zap, Settings, RefreshCw, X, Shield, Menu } from 'lucide-react';
+import { Gavel, Eye, FileText, History, Zap, Settings, RefreshCw, X, Shield, Menu, Sun, Moon } from 'lucide-react';
 import { api } from '../../services/api';
 import { GrokChatBot } from '../ChatBot/GrokChatBot';
 
@@ -9,6 +9,7 @@ export const Layout = ({ children }) => {
   const [systemActive, setSystemActive] = useState(true);
   const [totalSessions, setTotalSessions] = useState(0);
   const [sidebarVisible, setSidebarVisible] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState(true); // Default to dark mode
 
   const [activeSession, setActiveSession] = useState(null);
 
@@ -28,6 +29,15 @@ export const Layout = ({ children }) => {
       })
       .catch(() => {});
   }, [location.pathname]);
+
+  // Apply dark mode class to html element
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDarkMode]);
 
   const isActive = (path) => {
     return location.pathname === path;
@@ -63,6 +73,13 @@ export const Layout = ({ children }) => {
           </div>
         </div>
         <div className="flex items-center gap-4">
+          <button 
+            onClick={() => setIsDarkMode(!isDarkMode)}
+            className="p-2 hover:bg-surface-container-high rounded-lg text-on-surface-variant hover:text-primary transition-colors"
+            title="Toggle Theme"
+          >
+            {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+          </button>
           <Link 
             to={activeSession ? `/court/${activeSession}` : "/court/demo"} 
             className={`font-body-md text-body-md font-medium transition-colors ${activeSession ? 'text-emerald-400 hover:text-emerald-300 animate-pulse' : 'text-on-surface-variant hover:text-primary'}`}
