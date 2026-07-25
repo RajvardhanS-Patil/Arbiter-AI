@@ -51,7 +51,7 @@ async def export_report(session_id: str, format: str = Query("markdown", regex="
         else:
             # Generate clean Markdown
             md = []
-            md.append(f"# ⚖️ Arbiter AI Fact-Verification Report: {report['title']}")
+            md.append(f"# Arbiter AI Fact-Verification Report: {report['title']}")
             md.append(f"\n**Investigation Topic:** {query}")
             md.append(f"**Overall Confidence Score:** {report['overall_confidence']}%")
             md.append(f"**Total Sources Evaluated:** {report['total_sources']}")
@@ -69,7 +69,7 @@ async def export_report(session_id: str, format: str = Query("markdown", regex="
             # Claims listing
             md.append("\n## Interrogated Claims")
             for i, claim in enumerate(claims_rows, 1):
-                status_emoji = "✅" if claim["verification_status"] == "verified" else "❌" if claim["verification_status"] == "disputed" else "⚠️"
+                status_emoji = "[VERIFIED]" if claim["verification_status"] == "verified" else "[DISPUTED]" if claim["verification_status"] == "disputed" else "[UNCERTAIN]"
                 md.append(f"\n{i}. {status_emoji} **Claim:** \"{claim['text']}\"")
                 md.append(f"   - **Verdict:** {claim['verdict'].upper()} (Confidence: {claim['confidence_score']}%)")
                 md.append(f"   - **Category:** {claim['category']}")

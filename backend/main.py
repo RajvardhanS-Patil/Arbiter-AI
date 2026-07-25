@@ -13,6 +13,7 @@ import database as db_module
 from routes.research import router as research_router
 from routes.reports import router as reports_router
 from routes.sessions import router as sessions_router
+from routes.upload import router as upload_router
 from routes.websocket import router as ws_router, manager as ws_manager
 from agents.orchestrator import orchestrator_agent
 
@@ -53,6 +54,7 @@ app.add_middleware(
 app.include_router(research_router, prefix="/api/v1", tags=["Research"])
 app.include_router(reports_router, prefix="/api/v1", tags=["Reports"])
 app.include_router(sessions_router, prefix="/api/v1", tags=["Sessions"])
+app.include_router(upload_router, prefix="/api/v1", tags=["Upload"])
 app.include_router(ws_router, tags=["WebSocket"])
 
 

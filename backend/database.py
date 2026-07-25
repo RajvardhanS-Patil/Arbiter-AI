@@ -166,7 +166,7 @@ async def init_db():
         await db.execute("CREATE INDEX IF NOT EXISTS idx_votes_claim ON consensus_votes(claim_id)")
         
         await db.commit()
-        print("✅ Database initialized successfully")
+        print("[OK] Database initialized successfully")
 
 
 # ─── CRUD Helpers ────────────────────────────────────────────────────

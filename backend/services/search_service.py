@@ -33,7 +33,7 @@ class SearchService:
             
             return results
         except Exception as e:
-            print(f"⚠️ DuckDuckGo search failed: {e}")
+            print(f"[WARNING] DuckDuckGo search failed: {e}")
             return []
     
     def _do_ddg_search(self, query: str, max_results: int) -> list[dict]:
@@ -52,7 +52,7 @@ class SearchService:
                         "domain": domain
                     })
         except Exception as e:
-            print(f"⚠️ DDG search error: {e}")
+            print(f"[WARNING] DDG search error: {e}")
         
         return results
     
@@ -68,7 +68,7 @@ class SearchService:
             await asyncio.sleep(self.search_delay)
             return results
         except Exception as e:
-            print(f"⚠️ DuckDuckGo news search failed: {e}")
+            print(f"[WARNING] DuckDuckGo news search failed: {e}")
             return []
     
     def _do_ddg_news_search(self, query: str, max_results: int) -> list[dict]:
@@ -88,7 +88,7 @@ class SearchService:
                         "date": r.get("date", "")
                     })
         except Exception as e:
-            print(f"⚠️ DDG news error: {e}")
+            print(f"[WARNING] DDG news error: {e}")
         
         return results
     
@@ -161,7 +161,7 @@ class SearchService:
                 "domain": "en.wikipedia.org"
             }
         except Exception as e:
-            print(f"⚠️ Wikipedia search failed: {e}")
+            print(f"[WARNING] Wikipedia search failed: {e}")
             return None
     
     async def fetch_page_content(self, url: str, max_chars: int = 3000) -> str:
@@ -198,7 +198,7 @@ class SearchService:
             
             return text[:max_chars]
         except Exception as e:
-            print(f"⚠️ Failed to fetch {url}: {e}")
+            print(f"[WARNING] Failed to fetch {url}: {e}")
             return ""
     
     async def comprehensive_search(self, query: str, max_results: int = 8) -> list[dict]:

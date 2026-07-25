@@ -71,7 +71,7 @@ class OrchestratorAgent(BaseAgent):
             await db_module.create_agent_message(database, msg_data)
             await database.close()
         except Exception as e:
-            print(f"⚠️ Failed to save agent message: {e}")
+            print(f"[WARNING] Failed to save agent message: {e}")
         
         # Broadcast via WebSocket
         if self._ws_broadcast:
@@ -89,7 +89,7 @@ class OrchestratorAgent(BaseAgent):
             try:
                 await self._ws_broadcast(self._current_session_id, ws_event)
             except Exception as e:
-                print(f"⚠️ WebSocket broadcast failed: {e}")
+                print(f"[WARNING] WebSocket broadcast failed: {e}")
     
     async def run_pipeline(self, session_id: str, query: str, 
                            depth: str = "standard", max_claims: int = 15,
@@ -146,36 +146,43 @@ class OrchestratorAgent(BaseAgent):
             if not claims:
                 raise RuntimeError("Investigator found no claims. Try a different query.")
             
-            # ─── Stage 2: Verification ───────────────────────────────
+            # ─── Stages 2-4: The Debate (Process Claims Iteratively) ────────
             await self.emit_event(
                 "agent_message",
-                f"🛡️ Dispatching Verifier agent for {len(claims)} claims...",
-                to_agent="verifier",
-                metadata={"session_id": session_id, "stage": 2, "claims_count": len(claims)}
-            )
-            
-            verified_claims = await verifier_agent.process(session_id, claims)
-            
-            # ─── Stage 3: Devil's Advocate ───────────────────────────
-            await self.emit_event(
-                "agent_message",
-                f"😈 Dispatching Devil's Advocate agent...",
-                to_agent="devils_advocate",
-                metadata={"session_id": session_id, "stage": 3}
-            )
-            
-            challenged_claims = await devils_advocate_agent.process(session_id, verified_claims)
-            
-            # ─── Stage 4: Judgment ───────────────────────────────────
-            await self.emit_event(
-                "agent_message",
-                f"⚖️ Dispatching Judge agent for final verdicts...",
+                f"⚖️ The Tribunal is now in session. {len(claims)} claims will be debated.",
                 to_agent="judge",
-                metadata={"session_id": session_id, "stage": 4}
+                metadata={"session_id": session_id, "stage": 2}
             )
             
-            judged_claims = await judge_agent.process(session_id, challenged_claims)
+            judged_claims = []
             
+            for i, claim in enumerate(claims):
+                # 1. Verifier checks the claim
+                await self.emit_event(
+                    "agent_message",
+                    f"🛡️ Examining Claim {i+1}...",
+                    to_agent="verifier",
+                    metadata={"session_id": session_id, "stage": 2}
+                )
+                verified_result = await verifier_agent.process(session_id, [claim])
+                verified_claim = verified_result[0]
+                
+                # 2. Devil's Advocate challenges it
+                await self.emit_event(
+                    "agent_message",
+                    f"😈 Preparing cross-examination for Claim {i+1}...",
+                    to_agent="devils_advocate",
+                    metadata={"session_id": session_id, "stage": 3}
+                )
+                challenged_result = await devils_advocate_agent.process(session_id, [verified_claim])
+                challenged_claim = challenged_result[0]
+                
+                # 3. Judge renders a verdict
+                judged_result = await judge_agent.process(session_id, [challenged_claim])
+                judged_claim = judged_result[0]
+                
+                judged_claims.append(judged_claim)
+                
             # ─── Stage 5: Synthesis ──────────────────────────────────
             await self.emit_event(
                 "agent_message",
@@ -207,7 +214,7 @@ class OrchestratorAgent(BaseAgent):
         except Exception as e:
             elapsed = time.time() - start_time
             error_msg = str(e)
-            print(f"❌ Pipeline error after {elapsed:.1f}s: {error_msg}")
+            print(f"[ERROR] Pipeline error after {elapsed:.1f}s: {error_msg}")
             traceback.print_exc()
             
             # Update session as failed

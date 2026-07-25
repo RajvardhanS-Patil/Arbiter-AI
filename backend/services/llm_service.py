@@ -68,7 +68,7 @@ class GeminiProvider(LLMProvider):
             
             return response.text or ""
         except Exception as e:
-            print(f"⚠️ Gemini error: {e}")
+            print(f"[ERROR] Gemini error: {e}")
             traceback.print_exc()
             raise
 
@@ -115,7 +115,7 @@ class GroqProvider(LLMProvider):
             
             return response.choices[0].message.content or ""
         except Exception as e:
-            print(f"⚠️ Groq error: {e}")
+            print(f"[ERROR] Groq error: {e}")
             traceback.print_exc()
             raise
 
@@ -134,14 +134,14 @@ class LLMService:
         """Initialize available providers based on API keys."""
         if settings.has_gemini:
             self.providers["gemini"] = GeminiProvider()
-            print("✅ Gemini provider initialized")
+            print("[OK] Gemini provider initialized")
         
         if settings.has_groq:
             self.providers["groq"] = GroqProvider()
-            print("✅ Groq provider initialized")
+            print("[OK] Groq provider initialized")
         
         if not self.providers:
-            print("⚠️ No LLM providers configured! Set GEMINI_API_KEY or GROQ_API_KEY")
+            print("[WARNING] No LLM providers configured! Set GEMINI_API_KEY or GROQ_API_KEY")
     
     @property
     def primary_provider(self) -> str:
@@ -193,7 +193,7 @@ class LLMService:
             except Exception as e:
                 if attempt < retries - 1:
                     wait_time = retry_delay * (2 ** attempt)  # Exponential backoff
-                    print(f"⚠️ LLM call failed (attempt {attempt + 1}/{retries}), retrying in {wait_time}s: {e}")
+                    print(f"[WARNING] LLM call failed (attempt {attempt + 1}/{retries}), retrying in {wait_time}s: {e}")
                     await asyncio.sleep(wait_time)
                     # Try a different provider on retry
                     other_providers = [p for p in self.providers.keys() if p != provider_name]
@@ -234,10 +234,10 @@ class LLMService:
                 return json.loads(cleaned)
             except json.JSONDecodeError as e:
                 if attempt < retries - 1:
-                    print(f"⚠️ JSON parse failed (attempt {attempt + 1}), retrying: {e}")
+                    print(f"[WARNING] JSON parse failed (attempt {attempt + 1}), retrying: {e}")
                     await asyncio.sleep(1)
                 else:
-                    print(f"❌ JSON parse failed after {retries} attempts. Raw: {raw[:200]}")
+                    print(f"[ERROR] JSON parse failed after {retries} attempts. Raw: {raw[:200]}")
                     # Return a safe default
                     return {}
     
@@ -268,7 +268,7 @@ class LLMService:
             try:
                 results[name] = await task
             except Exception as e:
-                print(f"⚠️ Provider {name} failed in multi-model: {e}")
+                print(f"[WARNING] Provider {name} failed in multi-model: {e}")
                 results[name] = ""
         
         return results
@@ -314,7 +314,7 @@ Respond with ONLY valid JSON in this exact format:
                     "reasoning": parsed.get("reasoning", "")
                 })
             except (json.JSONDecodeError, ValueError, AttributeError) as e:
-                print(f"⚠️ Failed to parse consensus from {provider_name}: {e}")
+                print(f"[WARNING] Failed to parse consensus from {provider_name}: {e}")
                 votes.append({
                     "provider": provider_name,
                     "model": "unknown",

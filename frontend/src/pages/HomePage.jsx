@@ -1,19 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Bolt, ShieldAlert, FileText, CheckCircle, Clock, RefreshCw, BarChart2, TrendingUp } from 'lucide-react';
+import { Search, Bolt, ShieldAlert, FileText, CheckCircle, Clock, RefreshCw, BarChart2, TrendingUp, Paperclip, X } from 'lucide-react';
 import { api } from '../services/api';
+import { DebateArena } from '../components/DebateArena/DebateArena';
 
 export const HomePage = () => {
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [depth, setDepth] = useState('standard');
   const [loading, setLoading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const fileInputRef = useRef(null);
   const [recentSessions, setRecentSessions] = useState([]);
   const [stats, setStats] = useState({
     verifiedClaims: 150,
     activeSessions: 45,
     avgAccuracy: 92
   });
+  const [activeSessionId, setActiveSessionId] = useState(null);
 
   useEffect(() => {
     // Fetch recent sessions
@@ -38,16 +42,28 @@ export const HomePage = () => {
   }, []);
 
   const handleInvestigate = async () => {
-    if (!query.trim()) return;
+    if (!query.trim() && !selectedFile) return;
     setLoading(true);
     try {
-      const res = await api.startResearch(query, depth);
-      navigate(`/observatory/${res.session_id}`);
+      let res;
+      if (selectedFile) {
+        res = await api.uploadDocument(selectedFile, query, depth);
+      } else {
+        res = await api.startResearch(query, depth);
+      }
+      setActiveSessionId(res.session_id);
     } catch (err) {
       console.error(err);
       alert('Failed to initiate research. Please make sure the backend server is running and API keys are set.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedFile(file);
     }
   };
 
@@ -90,12 +106,18 @@ export const HomePage = () => {
           Interrogate complex legal data with AI-driven precision. Define your depth, initiate verification, and command clarity.
         </p>
 
-        {/* Search Hero Section */}
-        <div className="glass-panel p-2 rounded-2xl bloom-purple max-w-3xl mx-auto mb-8 border border-white/10">
+        {activeSessionId ? (
+          <div className="mb-20">
+            <DebateArena sessionId={activeSessionId} topic={query || selectedFile?.name} />
+          </div>
+        ) : (
+          <>
+            {/* Search Hero Section */}
+            <div className="glass-panel p-2 rounded-2xl bloom-purple max-w-3xl mx-auto mb-8 border border-white/10">
           <div className="relative flex items-center">
             <Search className="absolute left-6 text-on-surface-variant w-6 h-6" />
             <input 
-              className="w-full bg-surface-container-low border-none focus:outline-none focus:ring-2 focus:ring-primary-container rounded-xl py-5 pl-16 pr-32 font-body-md text-white placeholder:text-outline" 
+              className="w-full bg-surface-container-low border-none focus:outline-none focus:ring-2 focus:ring-primary-container rounded-xl py-5 pl-16 pr-[14rem] font-body-md text-white placeholder:text-outline" 
               placeholder="Enter investigation topic, case citation, or legal claim..." 
               type="text"
               value={query}
@@ -103,19 +125,51 @@ export const HomePage = () => {
               onKeyDown={(e) => e.key === 'Enter' && handleInvestigate()}
               disabled={loading}
             />
-            <button 
-              onClick={handleInvestigate}
-              disabled={loading || !query.trim()}
-              className="absolute right-3 bg-primary-container text-on-primary-container px-6 py-3 rounded-lg font-bold primary-glow transition-all active:scale-95 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? (
-                <RefreshCw className="w-5 h-5 animate-spin" />
-              ) : (
-                <Bolt className="w-5 h-5" />
-              )}
-              Investigate
-            </button>
+            <div className="absolute right-3 flex items-center gap-2">
+              <input 
+                type="file" 
+                className="hidden" 
+                ref={fileInputRef} 
+                onChange={handleFileChange}
+                accept=".pdf,.txt,.md,.csv,.json,.png,.jpg,.jpeg,.docx"
+              />
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={loading}
+                className="p-3 rounded-lg text-on-surface-variant hover:text-white hover:bg-surface-container-high transition-colors"
+                title="Attach document"
+              >
+                <Paperclip className="w-5 h-5" />
+              </button>
+              <button 
+                onClick={handleInvestigate}
+                disabled={loading || (!query.trim() && !selectedFile)}
+                className="bg-primary-container text-on-primary-container px-6 py-3 rounded-lg font-bold primary-glow transition-all active:scale-95 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? (
+                  <RefreshCw className="w-5 h-5 animate-spin" />
+                ) : (
+                  <Bolt className="w-5 h-5" />
+                )}
+                Investigate
+              </button>
+            </div>
           </div>
+          {selectedFile && (
+            <div className="flex items-center gap-2 mt-3 px-4 pb-2">
+              <div className="flex items-center gap-2 bg-surface-container-high px-3 py-1.5 rounded-full border border-white/10">
+                <FileText className="w-4 h-4 text-primary" />
+                <span className="text-white text-sm font-data-mono truncate max-w-[200px]">{selectedFile.name}</span>
+                <button 
+                  onClick={() => { setSelectedFile(null); if(fileInputRef.current) fileInputRef.current.value = ''; }}
+                  className="text-outline hover:text-red-400 transition-colors ml-1"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Investigation Modes */}
@@ -134,6 +188,8 @@ export const HomePage = () => {
             </button>
           ))}
         </div>
+        </>
+        )}
 
         {/* Recent Sessions Section */}
         <div className="text-left mb-6 flex justify-between items-end">

@@ -20,6 +20,25 @@ export const api = {
   },
 
   /**
+   * Upload a document for verification.
+   */
+  uploadDocument: async (file, query = '', depth = 'standard') => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('depth', depth);
+    if (query && query.trim() !== '') {
+      formData.append('query', query.trim());
+    }
+    
+    const response = await fetch(`${BASE_URL}/upload/verify`, {
+      method: 'POST',
+      body: formData
+    });
+    if (!response.ok) throw new Error('Failed to upload document');
+    return response.json();
+  },
+
+  /**
    * Get progress/status of a session.
    */
   getSessionStatus: async (sessionId) => {
