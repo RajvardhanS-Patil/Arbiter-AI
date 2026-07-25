@@ -3,7 +3,8 @@
  * Handles making requests to the FastAPI backend.
  */
 
-const BASE_URL = '/api/v1';
+const API_URL = import.meta.env.VITE_API_URL || '';
+const BASE_URL = API_URL ? `${API_URL}/api/v1` : '/api/v1';
 
 export const api = {
   /**

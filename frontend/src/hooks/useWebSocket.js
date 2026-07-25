@@ -31,9 +31,17 @@ export const useWebSocket = (sessionId, onEvent) => {
 
       // Use Vite proxy: connect through the same origin (port 5173)
       // Vite proxies /ws/* to ws://localhost:8000
-      const loc = window.location;
-      const protocol = loc.protocol === 'https:' ? 'wss:' : 'ws:';
-      const wsUrl = `${protocol}//${loc.host}/ws/session/${sessionId}`;
+      const apiUrl = import.meta.env.VITE_API_URL || '';
+      let wsUrl;
+      if (apiUrl) {
+        const wsProtocol = apiUrl.startsWith('https') ? 'wss:' : 'ws:';
+        const host = apiUrl.replace(/^https?:\/\//, '');
+        wsUrl = `${wsProtocol}//${host}/ws/session/${sessionId}`;
+      } else {
+        const loc = window.location;
+        const protocol = loc.protocol === 'https:' ? 'wss:' : 'ws:';
+        wsUrl = `${protocol}//${loc.host}/ws/session/${sessionId}`;
+      }
 
       console.log(`[WS] Connecting to: ${wsUrl}`);
       const ws = new WebSocket(wsUrl);
