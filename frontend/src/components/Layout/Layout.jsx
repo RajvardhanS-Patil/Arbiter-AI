@@ -8,6 +8,7 @@ export const Layout = ({ children }) => {
   const location = useLocation();
   const [systemActive, setSystemActive] = useState(true);
   const [totalSessions, setTotalSessions] = useState(0);
+  const [sidebarVisible, setSidebarVisible] = useState(true);
 
   const [activeSession, setActiveSession] = useState(null);
 
@@ -35,8 +36,14 @@ export const Layout = ({ children }) => {
   return (
     <div className="bg-surface text-on-surface min-h-screen font-body-md relative select-none">
       {/* Top Navbar */}
-      <nav className="fixed top-0 w-full h-16 z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop py-4 bg-surface/80 backdrop-blur-xl border-b border-white/10 shadow-sm">
-        <div className="flex items-center gap-8">
+      <nav className="fixed top-0 w-full h-16 z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop py-4 bg-surface/80 backdrop-blur-xl border-b border-white/10 shadow-sm transition-all duration-300">
+        <div className="flex items-center gap-4 md:gap-8">
+          <button 
+            onClick={() => setSidebarVisible(!sidebarVisible)}
+            className="hidden md:flex p-2 hover:bg-surface-container-high rounded-lg text-on-surface-variant hover:text-primary transition-colors"
+          >
+            <Menu className="w-6 h-6" />
+          </button>
           <Link to="/" className="font-display-lg text-headline-md tracking-tighter text-primary font-bold">
             ARBITER AI
           </Link>
@@ -69,7 +76,7 @@ export const Layout = ({ children }) => {
       </nav>
 
       {/* Sidebar - Desktop Only */}
-      <aside className="hidden md:flex flex-col fixed left-0 top-0 h-full w-[280px] z-40 bg-surface-container-lowest border-r border-white/10 pt-24 pb-8 px-6">
+      <aside className={`hidden md:flex flex-col fixed left-0 top-0 h-full w-[280px] z-40 bg-surface-container-lowest border-r border-white/10 pt-24 pb-8 px-6 transition-transform duration-300 ${sidebarVisible ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="flex items-center gap-3 mb-12">
           <div className="relative">
             <div className="w-12 h-12 rounded-full bg-primary-container/20 flex items-center justify-center border border-primary/30 text-primary">
@@ -120,7 +127,7 @@ export const Layout = ({ children }) => {
       </aside>
 
       {/* Main Canvas */}
-      <main className="md:ml-[280px] pt-24 pb-24 md:pb-8 px-margin-mobile md:px-margin-desktop min-h-screen relative z-10">
+      <main className={`pt-24 pb-24 md:pb-8 px-margin-mobile md:px-margin-desktop min-h-screen relative z-10 transition-all duration-300 ${sidebarVisible ? 'md:ml-[280px]' : 'ml-0'}`}>
         {children}
       </main>
 
