@@ -9,6 +9,7 @@ Arbiter AI is a real-time, multi-agent fact-checking and investigation platform.
 - **Document & Text Analysis**: Upload PDFs, TXTs, or paste claims directly for automated fact-checking.
 - **Dynamic Reporting**: Generates detailed markdown, JSON, and PDF reports with contradiction heat maps, source citations, and confidence scoring.
 - **Responsive UI**: A modern, glassmorphism-inspired UI built with React and Tailwind CSS, fully optimized for both desktop and mobile.
+- **Mobile First**: Recently updated to ensure perfect layout and usability on smaller screens.
 
 ## 🛠️ Tech Stack
 

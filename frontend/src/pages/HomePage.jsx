@@ -126,15 +126,15 @@ export const HomePage = () => {
           <div className="relative flex items-center">
             <Search className="absolute left-6 text-on-surface-variant w-6 h-6" />
             <input 
-              className="w-full bg-surface-container-low border-none focus:outline-none focus:ring-2 focus:ring-primary-container rounded-xl py-5 pl-16 pr-[14rem] font-body-md text-white placeholder:text-outline" 
-              placeholder="Enter investigation topic, case citation, or legal claim..." 
+              className="w-full bg-surface-container-low border-none focus:outline-none focus:ring-2 focus:ring-primary-container rounded-xl py-5 pl-12 md:pl-16 pr-16 md:pr-[14rem] font-body-md text-white placeholder:text-outline text-sm md:text-base" 
+              placeholder="Enter topic..." 
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleInvestigate()}
               disabled={loading}
             />
-            <div className="absolute right-3 flex items-center gap-2">
+            <div className="absolute right-2 md:right-3 flex items-center gap-1 md:gap-2">
               <input 
                 type="file" 
                 className="hidden" 
@@ -146,22 +146,22 @@ export const HomePage = () => {
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={loading}
-                className="p-3 rounded-lg text-on-surface-variant hover:text-white hover:bg-surface-container-high transition-colors"
+                className="p-2 md:p-3 rounded-lg text-on-surface-variant hover:text-white hover:bg-surface-container-high transition-colors"
                 title="Attach document"
               >
-                <Paperclip className="w-5 h-5" />
+                <Paperclip className="w-4 h-4 md:w-5 md:h-5" />
               </button>
               <button 
                 onClick={handleInvestigate}
                 disabled={loading || (!query.trim() && !selectedFile)}
-                className="bg-primary-container text-on-primary-container px-6 py-3 rounded-lg font-bold primary-glow transition-all active:scale-95 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-primary-container text-on-primary-container px-3 md:px-6 py-2 md:py-3 rounded-lg font-bold primary-glow transition-all active:scale-95 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
-                  <RefreshCw className="w-5 h-5 animate-spin" />
+                  <RefreshCw className="w-4 h-4 md:w-5 md:h-5 animate-spin" />
                 ) : (
-                  <Bolt className="w-5 h-5" />
+                  <Bolt className="w-4 h-4 md:w-5 md:h-5" />
                 )}
-                Investigate
+                <span className="hidden md:inline">Investigate</span>
               </button>
             </div>
           </div>
